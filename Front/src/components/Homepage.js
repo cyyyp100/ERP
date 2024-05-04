@@ -28,7 +28,7 @@ function HomePage() {
               <a className="nav-link active" href=".\CreationEvennement">CreationEvennement</a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">Ta mère</a>
+              <a className="nav-link" href="#">Ferrari</a>
             </li>
             <li className="nav-item">
               <a className="nav-link" href=".\login">Identification</a>
