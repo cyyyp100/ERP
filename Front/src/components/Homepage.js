@@ -25,7 +25,7 @@ function HomePage() {
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav">
                         <li className="nav-item">
-                            <a className="nav-link" href="/CreationEvennement">Créer un Événement</a>
+                            <a className="nav-link" href="/creationEvennement">Créer un Événement</a>
                         </li>
                         <li className="nav-item">
                             <a className="nav-link" href="/login">Identification</a>

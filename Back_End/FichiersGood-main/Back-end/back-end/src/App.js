@@ -50,6 +50,27 @@ app.post('/login', (req, res) => {
     }
 })
 
+app.post('/api/evenements', (req, res) => {
+  const newEvent = req.body;
+  fs.readFile('./mock-evenement.js', 'utf8', (err, data) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Erreur lors de la lecture du fichier');
+      return;
+    }
+    const events = JSON.parse(data);
+    events.push(newEvent);
+    fs.writeFile('./mock-evenement.js', JSON.stringify(events, null, 2), (err) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send('Erreur lors de l\'écriture du fichier');
+        return;
+      }
+      res.status(201).send('Événement ajouté avec succès');
+    });
+  });
+});
+
 //require('./src/routes/findAllPokemons')(app) //'app' est l'application Express
 //require('./src/routes/findPokemonsByPk')(app)
 //require('./src/routes/createPokemons')(app)
