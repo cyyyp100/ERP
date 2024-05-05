@@ -13,7 +13,6 @@ function App() {
                 <Route path="/CreationEvennement" element={<CreationEvennement />} />
                 <Route path="/Vignerons" element={<Login />} />
                 <Route path="/Prestataires" element={<Homepage />} />
-                <Route path="/Evennements" element={<CreationEvennement />} />
             </Routes>
         </Router>
     );
