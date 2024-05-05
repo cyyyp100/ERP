@@ -50,26 +50,26 @@ app.post('/login', (req, res) => {
     }
 })
 
-app.post('/api/evenements', (req, res) => {
-  const newEvent = req.body;
-  fs.readFile('./mock-evenement.js', 'utf8', (err, data) => {
-    if (err) {
-      console.error(err);
-      res.status(500).send('Erreur lors de la lecture du fichier');
-      return;
-    }
-    const events = JSON.parse(data);
-    events.push(newEvent);
-    fs.writeFile('./mock-evenement.js', JSON.stringify(events, null, 2), (err) => {
-      if (err) {
-        console.error(err);
-        res.status(500).send('Erreur lors de l\'écriture du fichier');
-        return;
-      }
-      res.status(201).send('Événement ajouté avec succès');
+app.post('/api/evenements', async (req, res) => {
+  try {
+    const { nom, dateDebut, heureDebut, dateFin, heureFin, lieu, objectifs, typeLieu } = req.body;
+    const nouvelEvenement = await Evenement.create({
+      name: nom,
+      dateDebut,
+      heureDebut,
+      dateFin,
+      heureFin,
+      lieu,
+      Objectif_de_l_evenement: objectifs.join(', '), // Assurez-vous que le modèle peut gérer ce format
+      typeLieu
     });
-  });
+    res.status(201).json(nouvelEvenement);
+  } catch (error) {
+    console.error('Erreur lors de la création de l\'événement', error);
+    res.status(500).send('Erreur lors de la création de l\'événement');
+  }
 });
+
 
 //require('./src/routes/findAllPokemons')(app) //'app' est l'application Express
 //require('./src/routes/findPokemonsByPk')(app)
