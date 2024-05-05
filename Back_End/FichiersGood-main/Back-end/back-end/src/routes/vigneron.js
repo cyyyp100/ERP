@@ -4,7 +4,7 @@ const { Vigneron } = require('../db/sequelize');
 const fs = require('fs');
 
 // Route pour récupérer tous les vignerons
-router.get('/api/vignerons', (req, res) => {
+router.get('/', (req, res) => {
     // Supposant que vous voulez utiliser Sequelize pour récupérer les données
     Vigneron.findAll()
     .then(vignerons => {

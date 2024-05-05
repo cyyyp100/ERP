@@ -4,7 +4,7 @@ const fs = require('fs'); // Assurez-vous d'inclure le module fs pour lire les f
 const evenements = require('../db/mock-evenement');  // Assurez-vous que le chemin est correct
 
 // Route pour obtenir tous les événements
-router.get('/api/evenements', (req, res) => {
+router.get('/', (req, res) => {
     res.json(evenements);
 });
 

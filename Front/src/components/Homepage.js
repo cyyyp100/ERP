@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 function HomePage() {
-    const [evenements, setEvenements] = useState([]);
+    const [events, setEvenements] = useState([]);
 
     useEffect(() => {
         fetch('http://localhost:3001/api/evenements')
@@ -38,8 +38,8 @@ function HomePage() {
                 </div>
             </nav>
         <h2>Liste des Événements</h2>
-            {evenements.length > 0 ? (
-                evenements.map(evt => (
+            {events.length > 0 ? (
+                events.map(evt => (
                     <div key={evt.id}>
                         <h2>{evt.name}</h2>
                         <p>Lieu: {evt.lieu}</p>
