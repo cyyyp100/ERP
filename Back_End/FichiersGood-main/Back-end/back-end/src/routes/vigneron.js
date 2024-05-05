@@ -19,17 +19,12 @@ router.get('/', (req, res) => {
 // Route pour créer un vigneron
 router.post('/', async (req, res) => {
     try {
-        const { nom_vigneron, contact_vigneron, prix } = req.body;
-        const nouveauVigneron = await Vigneron.create({
-            name: nom_vigneron,
-            contact: contact_vigneron,
-            prix: prix,
-        });
-        res.status(201).json(nouveauVigneron);
+        const { name, prix, cout, contact } = req.body;
+        const newVigneron = await Vigneron.create({ name, prix, cout, contact });
+        res.status(201).json(newVigneron);
     } catch (error) {
-        console.error('Erreur lors de la création du vigneron', error);
-        res.status(500).send('Erreur lors de la création du vigneron');
+        console.error('Erreur lors de l’ajout du vigneron:', error);
+        res.status(500).send('Erreur lors de l’ajout du vigneron');
     }
 });
-
 module.exports = router;
