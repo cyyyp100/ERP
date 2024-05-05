@@ -43,7 +43,7 @@ function CreationEvennement() {
           headers: {
               'Content-Type': 'application/json',
           },
-          body: JSON.stringify(formData)
+          body: JSON.stringify(VigneronData)
       })
       .then(response => response.json())
       .then(data => {
@@ -239,17 +239,17 @@ function CreationEvennement() {
 
       <div>Vigneron</div>
       <form onSubmit={handleVigneronSubmit}>
-                Nouveau Vigneron: Nom <input type="text" name="name" onChange={handleVigneronChange} value={formData.name} />
-                Contact <input type="text" name="contact" onChange={handleVigneronChange} value={formData.contact} />
-                Prix <input type="number" name="prix" onChange={handleVigneronChange} value={formData.prix} min="0" />
+                Nouveau Vigneron: Nom <input type="text" name="name" onChange={handleVigneronChange} value={VigneronData.name} />
+                Contact <input type="text" name="contact" onChange={handleVigneronChange} value={VigneronData.contact} />
+                Prix <input type="number" name="prix" onChange={handleVigneronChange} value={VigneronData.prix} min="0" />
                 <input type="submit" value="Ajouter Vigneron" />
             </form>
 
       <div>Prestataires</div>
       <form onSubmit={handlePrestataireSubmit}>
-                Nouveau Vigneron: Nom <input type="text" name="name" onChange={handlePrestataireChange} value={formData.name} />
-                Contact <input type="text" name="contact" onChange={handlePrestataireChange} value={formData.contact} />
-                Prix <input type="number" name="prix" onChange={handlePrestataireChange} value={formData.prix} min="0" />
+                Nouveau Prestataire: Nom <input type="text" name="name" onChange={handlePrestataireChange} value={PrestataireData.name} />
+                Contact <input type="text" name="contact" onChange={handlePrestataireChange} value={PrestataireData.contact} />
+                Prix <input type="number" name="prix" onChange={handlePrestataireChange} value={PrestataireData.prix} min="0" />
                 <input type="submit" value="Ajouter Prestataire" />
             </form>
 
