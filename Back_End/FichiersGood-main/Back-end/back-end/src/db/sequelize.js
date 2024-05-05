@@ -11,6 +11,8 @@ const sponsors = require ('./mock-sponsor')
 const SponsorModel = require ('../models/sponsor')
 const evenements = require('./mock-evenement')
 const EvenementModel = require('../models/evenement') 
+const prestataires = require('./mock-prestataires')
+const PrestataireModel = require('../models/prestataires')
 
 
 const sequelize = new Sequelize('pokedex', 'root', '', {
@@ -28,6 +30,7 @@ const Animation = animationModel (sequelize, DataTypes)
 const Materiel = materielModel (sequelize, DataTypes)
 const Sponsor = SponsorModel (sequelize, DataTypes)
 const Evenement = EvenementModel (sequelize, DataTypes)
+const Prestataire = PrestataireModel (sequelize, DataTypes)
 
 const initDb = () => {
   return sequelize.sync({force: true}).then(() => {
@@ -59,6 +62,16 @@ const initDb = () => {
           }).then(vigneron => console.log(vigneron.toJSON()))
           console.log('La base de donnée vignerons a bien été initialisée !')
         })
+      
+        prestataires.map(prestataire => {
+          Prestataire.create({
+              name: prestataire.name,
+              prix: prestataire.prix,
+              cout: prestataire.cout,
+              contact: prestataire.contact
+            }).then(prestataire => console.log(prestataire.toJSON()))
+            console.log('La base de donnée vignerons a bien été initialisée !')
+          })
 
         animations.map(animation => {
           Animation.create({
@@ -103,5 +116,5 @@ const initDb = () => {
 }
 
 module.exports = { 
-  initDb, Vigneron, Sponsor, Materiel, Animation, Evenement, User
+  initDb, Vigneron, Sponsor, Materiel, Animation, Evenement, User, Prestataire
 }

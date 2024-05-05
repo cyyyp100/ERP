@@ -11,6 +11,7 @@ const port = 3001;
 const evenementsRoutes = require('./routes/evennements');
 const loginRoutes = require('./routes/login');
 const vigneronsRoutes = require('./routes/vigneron');
+const prestatairesRoutes = require('./routes/prestataire');
 
 // Initialisation de la base de données
 sequelize.initDb();
@@ -25,6 +26,7 @@ app.use(cors());
 app.use('/api/evenements', evenementsRoutes);
 app.use('/api/login', loginRoutes);
 app.use('/api/vignerons', vigneronsRoutes);
+app.use('/api/prestataires', prestatairesRoutes);
 
 app.use((req, res, next) => {
     res.status(404).send('Resource not found!');

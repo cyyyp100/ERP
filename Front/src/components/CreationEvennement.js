@@ -1,9 +1,101 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './bootstrap.css'; 
 import CheckboxGroup from '../helpers/CheckboxGroup';
 import RangeSelector from '../helpers/RangeSelector';
 
 function CreationEvennement() {
+  const [vignerons, setVignerons] = useState([]);
+  const [VigneronData, setVigneronData] = useState({
+      name: '',
+      prix: 0,
+      cout: 0,
+      contact: ''
+  });
+
+  const [Prestataires, setPrestataires] = useState([]);
+  const [PrestataireData, setPrestataireData] = useState({
+      name: '',
+      prix: 0,
+      cout: 0,
+      contact: ''
+  });
+
+  const handleVigneronChange = (event) => {
+      const { name, value } = event.target;
+      setFormData(prevState => ({
+          ...prevState,
+          [name]: value
+      }));
+  };
+
+  const handlePrestataireChange = (event) => {
+      const { name, value } = event.target;
+      setPrestataireData(prevState => ({
+          ...prevState,
+          [name]: value
+      }));
+  };
+
+  const handleVigneronSubmit = (event) => {
+      event.preventDefault();
+      fetch('http://localhost:3001/api/vignerons', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData)
+      })
+      .then(response => response.json())
+      .then(data => {
+          setVignerons([...vignerons, data]);
+          alert('Vigneron ajouté avec succès!');
+      })
+      .catch(error => {
+          console.error('Erreur lors de l’ajout du vigneron:', error);
+          alert('Erreur lors de l’ajout du vigneron');
+      });
+  };
+
+  const handlePrestataireSubmit = (event) => {
+      event.preventDefault();
+      fetch('http://localhost:3001/api/Prestataires', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(PrestataireData)
+      })
+      .then(response => response.json())
+      .then(data => {
+          setPrestataires([...Prestataires, data]);
+          alert('Food truck ajouté avec succès!');
+      })
+      .catch(error => {
+          console.error('Erreur lors de l’ajout du food truck:', error);
+          alert('Erreur lors de l’ajout du food truck');
+      });
+  };
+
+  useEffect(() => {
+      fetch('http://localhost:3001/api/vignerons')
+          .then(response => response.json())
+          .then(data => {
+              setVignerons(data);
+          })
+          .catch(error => {
+              console.error('Erreur lors de la récupération des vignerons:', error);
+          });
+
+      fetch('http://localhost:3001/api/prestataires')
+          .then(response => response.json())
+          .then(data => {
+              setPrestataires(data);
+          })
+          .catch(error => {
+              console.error('Erreur lors de la récupération des food trucks:', error);
+          });
+  }, []);
+
   const [selectedOption, setSelectedOption] = useState(''); // Ensure this is defined
 
     const handleChange = (event) => {
@@ -43,6 +135,8 @@ function CreationEvennement() {
         console.log(formData);
         alert('Formulaire soumis, vérifiez la console pour les données.');
     };
+
+    
   
   
   return (
@@ -144,20 +238,20 @@ function CreationEvennement() {
       <h1>Organisation personnel</h1>
 
       <div>Vigneron</div>
-      <form method="get" action="./controle">
-        Nouveau Vigneron: Nom <input type="text" name="nom_vigneron" />
-        Contact <input type="text" name="contact_vigneron" />
-        Prix <input type="number" name="prix" id="prix_vigneron" min="0" />
-        <input type="submit" name="action" value="addVigneron" />
-      </form>
+      <form onSubmit={handleVigneronSubmit}>
+                Nouveau Vigneron: Nom <input type="text" name="name" onChange={handleVigneronChange} value={formData.name} />
+                Contact <input type="text" name="contact" onChange={handleVigneronChange} value={formData.contact} />
+                Prix <input type="number" name="prix" onChange={handleVigneronChange} value={formData.prix} min="0" />
+                <input type="submit" value="Ajouter Vigneron" />
+            </form>
 
       <div>Prestataires</div>
-      <form method="get" action="./controle">
-        Nouveau Prestataire : Nom :<input type="text" name="nom_prestataire" />
-        Contact : <input type="text" name="contact_prestataire" />
-        Prix :<input type="number" name="prix" id="prix_prestataire" min="0" />
-        <input type="submit" name="action" value="addPrestataire" />
-      </form>
+      <form onSubmit={handlePrestataireSubmit}>
+                Nouveau Vigneron: Nom <input type="text" name="name" onChange={handlePrestataireChange} value={formData.name} />
+                Contact <input type="text" name="contact" onChange={handlePrestataireChange} value={formData.contact} />
+                Prix <input type="number" name="prix" onChange={handlePrestataireChange} value={formData.prix} min="0" />
+                <input type="submit" value="Ajouter Prestataire" />
+            </form>
 
       <div>Sponsors</div>
       <form method="get" action="./controle">
