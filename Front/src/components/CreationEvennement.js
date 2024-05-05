@@ -4,45 +4,45 @@ import CheckboxGroup from '../helpers/CheckboxGroup';
 import RangeSelector from '../helpers/RangeSelector';
 
 function CreationEvennement() {
-  const [selectedOption, setSelectedOption] = useState('');
+  const [selectedOption, setSelectedOption] = useState(''); // Ensure this is defined
 
-  const handleChange = (event) => {
-    setSelectedOption(event.target.value);
-  };
-  const [formData, setFormData] = useState({
-    dateDebut: '',
-    heureDebut: '',
-    dateFin: '',
-    heureFin: '',
-    lieu: '',
-    typeLieu: '',
-    objectifs: [],
-    questionsInterieur: '',  // Questions pour le type "Intérieur"
-    questionsExterieur: '',  // Questions pour le type "Extérieur"
-    questionsMixte: '',      // Questions pour le type "Intérieur et Extérieur"
-  });
+    const handleChange = (event) => {
+        setSelectedOption(event.target.value);
+    };
 
-  // Changement de nom pour éviter la redéclaration
-  const handleInputChange = (event) => {
-    const { name, value, type, checked } = event.target;
-    if (type === 'checkbox') {
-      setFormData(prev => ({
-        ...prev,
-        objectifs: checked ? [...prev.objectifs, value] : prev.objectifs.filter(obj => obj !== value)
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }));
-    }
-  };
+    const [formData, setFormData] = useState({
+        dateDebut: '',
+        heureDebut: '',
+        dateFin: '',
+        heureFin: '',
+        lieu: '',
+        typeLieu: '',
+        objectifs: [],
+        questionsInterieur: '',
+        questionsExterieur: '',
+        questionsMixte: '',
+    });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log(formData);  // Pour tester les données collectées
-    alert('Formulaire soumis, vérifiez la console pour les données.');
-  };
+    const handleInputChange = (event) => {
+        const { name, value, type, checked } = event.target;
+        if (type === 'checkbox') {
+            setFormData(prev => ({
+                ...prev,
+                objectifs: checked ? [...prev.objectifs, value] : prev.objectifs.filter(obj => obj !== value)
+            }));
+        } else {
+            setFormData(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        }
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log(formData);
+        alert('Formulaire soumis, vérifiez la console pour les données.');
+    };
   
   
   return (

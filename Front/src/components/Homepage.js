@@ -7,13 +7,14 @@ function HomePage() {
         fetch('http://localhost:3001/api/evenements')
         .then(response => response.json())
         .then(data => {
-            console.log('Data received:', data); // Assurez-vous que cette ligne affiche les données
+            console.log('Data received:', data); 
             setEvenements(data);
         })
         .catch(error => {
             console.error('Fetch error:', error);
         });
     }, []);
+    
 
     return (
         <div>
@@ -30,6 +31,9 @@ function HomePage() {
                         <li className="nav-item">
                             <a className="nav-link" href="/login">Identification</a>
                         </li>
+                        <li className="nav-item">
+                            <a className="nav-link" href="/PageVignerons">Vignerons</a>
+                        </li>
                     </ul>
                 </div>
             </nav>
@@ -39,7 +43,6 @@ function HomePage() {
                     <div key={evt.id}>
                         <h2>{evt.name}</h2>
                         <p>Lieu: {evt.lieu}</p>
-                        <p>Objectifs: {evt.Objectif_de_l_evenement.join(', ')}</p>
                         <p>Date: {new Date(evt.created).toLocaleDateString()}</p>
                     </div>
                 ))

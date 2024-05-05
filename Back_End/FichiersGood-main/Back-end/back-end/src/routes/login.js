@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { User } = require('../db/sequelize'); // Chemin vers votre modèle Sequelize User
+const { User } = require('../db/sequelize'); 
 const bcrypt = require('bcrypt');
 
 // Route pour la connexion des utilisateurs
