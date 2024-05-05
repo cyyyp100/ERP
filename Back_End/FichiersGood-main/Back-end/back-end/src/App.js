@@ -26,6 +26,25 @@ app
 
 sequelize.initDb()
 
+const Vigneron = require('./models/vigneron')(sequelize, Sequelize.DataTypes);
+
+app.post('/api/vignerons', async (req, res) => {
+  try {
+    const { nom_vigneron, contact_vigneron, prix } = req.body;
+    const nouveauVigneron = await Vigneron.create({
+      name: nom_vigneron,
+      contact: contact_vigneron,
+      prix: prix,
+    });
+    res.status(201).json(nouveauVigneron);
+  } catch (error) {
+    console.error('Erreur lors de la création du vigneron', error);
+    res.status(500).send('Erreur lors de la création du vigneron');
+  }
+});
+
+
+
 app.get('/evenements', (req, res) => {
     // Lire le fichier evenement.json
     fs.readFile('evenement.json', (err, data) => {
