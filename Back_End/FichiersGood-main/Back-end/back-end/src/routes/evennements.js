@@ -9,26 +9,32 @@ router.get('/', (req, res) => {
 });
 
 // Route pour créer un nouvel événement
-router.post('/', async (req, res) => {
-    try {
-        const { nom, dateDebut, heureDebut, dateFin, heureFin, lieu, objectifs, typeLieu } = req.body;
-        // Supposons que vous avez un modèle Evenement correctement configuré
-        const Evenement = require('../models/evenement'); // Assurez-vous que le chemin vers votre modèle est correct
-        const nouvelEvenement = await Evenement.create({
-            name: nom,
-            dateDebut,
-            heureDebut,
-            dateFin,
-            heureFin,
-            lieu,
-            Objectif_de_l_evenement: objectifs.join(', '),
-            typeLieu
-        });
-        res.status(201).json(nouvelEvenement);
-    } catch (error) {
-        console.error('Erreur lors de la création de l\'événement', error);
-        res.status(500).send('Erreur lors de la création de l\'événement');
-    }
+router.post('/', (req, res) => {
+    const {
+        dateDebut, heureDebut, dateFin, heureFin, lieu, typeLieu, objectifs,
+        questionsInterieur, questionsExterieur, questionsMixte,
+        vignerons, prestataires  // Nouveaux champs pour vignerons et prestataires
+    } = req.body;
+
+    const nouvelEvenement = {
+        id: evenements.length + 1,
+        dateDebut,
+        heureDebut,
+        dateFin,
+        heureFin,
+        lieu,
+        typeLieu,
+        objectifs: objectifs.join(', '),
+        questionsInterieur,
+        questionsExterieur,
+        questionsMixte,
+        vignerons: vignerons.map(v => v.name).join(', '),  // Stockage des noms des vignerons
+        prestataires: prestataires.map(p => p.name).join(', '),  // Stockage des noms des prestataires
+        created: new Date()
+    };
+
+    evenements.push(nouvelEvenement);
+    res.status(201).json(nouvelEvenement);
 });
 
 module.exports = router;
