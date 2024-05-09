@@ -52,6 +52,7 @@ function HomePage() {
                         <h2>{evt.name}</h2>
                         <p>Lieu: {evt.lieu}</p>
                         <p>Date: {new Date(evt.created).toLocaleDateString()}</p>
+                        <a className="nav-link" href="/Evennement">Voir Evennement</a>
                     </div>
                 ))
             ) : (
