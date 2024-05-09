@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
 
 function HomePage() {
     const [events, setEvenements] = useState([]);
@@ -37,6 +39,12 @@ function HomePage() {
                     </ul>
                 </div>
             </nav>
+            <FullCalendar
+                plugins={[dayGridPlugin]}
+                initialView="dayGridMonth"
+                events={events}
+                locale="fr" // Localisation en français
+            />
         <h2>Liste des Événements</h2>
             {events.length > 0 ? (
                 events.map(evt => (
@@ -49,6 +57,7 @@ function HomePage() {
             ) : (
                 <p>Aucun événement à afficher</p>
             )}
+            
         </div>
     );
 }
