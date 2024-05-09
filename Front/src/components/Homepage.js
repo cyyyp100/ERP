@@ -43,7 +43,8 @@ function HomePage() {
                 plugins={[dayGridPlugin]}
                 initialView="dayGridMonth"
                 events={events}
-                locale="fr" // Localisation en français
+                locale="fr"
+                eventContent={renderEventContent} 
             />
         <h2>Liste des Événements</h2>
             {events.length > 0 ? (
@@ -52,15 +53,26 @@ function HomePage() {
                         <h2>{evt.name}</h2>
                         <p>Lieu: {evt.lieu}</p>
                         <p>Date: {new Date(evt.created).toLocaleDateString()}</p>
-                        <a className="nav-link" href="/Evennement">Voir Evennement</a>
+                        <a className="nav-link" href={`/Evennement?id=${evt.id}`}>Voir Evennement</a>
                     </div>
                 ))
             ) : (
                 <p>Aucun événement à afficher</p>
             )}
             
+            
         </div>
     );
+
+    function renderEventContent(eventInfo) {
+        return (
+            <div>
+                <Link to={`/event/${eventInfo.event.id}`}>{eventInfo.event.title}</Link>
+                {/* Vous pouvez ajouter plus de détails ici si nécessaire */}
+            </div>
+        );
+    }
+    
 }
 
 export default HomePage;
