@@ -8,6 +8,15 @@ router.get('/', (req, res) => {
     res.json(evenements);
 });
 
+router.get('/:id', (req, res) => {
+    const event = evenements.find(e => e.id === parseInt(req.params.id));
+    if (event) {
+        res.json(event);
+    } else {
+        res.status(404).send({ message: 'Événement non trouvé' });
+    }
+});
+
 // Route pour créer un nouvel événement
 router.post('/', (req, res) => {
     const {
@@ -28,8 +37,8 @@ router.post('/', (req, res) => {
         questionsInterieur,
         questionsExterieur,
         questionsMixte,
-        vignerons: vignerons.map(v => v.name).join(', '),  // Stockage des noms des vignerons
-        prestataires: prestataires.map(p => p.name).join(', '),  // Stockage des noms des prestataires
+        vignerons: vignerons.map(v => v.name).join(', '),  
+        prestataires: prestataires.map(p => p.name).join(', '),  
         created: new Date()
     };
 
