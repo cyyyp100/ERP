@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './components/Login'; 
 import Homepage from './components/Homepage'; 
 import CreationEvennement from './components/CreationEvennement';
+import PageVignerons from './components/PageVignerons'; 
+import EventPage from './components/EventPage';
 
 function App() {
     return (
@@ -10,10 +12,10 @@ function App() {
             <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/" element={<Homepage />} />
-                <Route path="/CreationEvennement" element={<CreationEvennement />} />
-                <Route path="/Vignerons" element={<Login />} />
+                <Route path="/creationEvennement" element={<CreationEvennement />} />
+                <Route path="/PageVignerons" element={<PageVignerons/>} />
                 <Route path="/Prestataires" element={<Homepage />} />
-                <Route path="/Evennements" element={<CreationEvennement />} />
+                <Route path="/event/:id" component={EventPage} />
             </Routes>
         </Router>
     );
