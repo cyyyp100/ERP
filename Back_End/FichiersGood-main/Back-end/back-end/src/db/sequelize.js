@@ -15,7 +15,7 @@ const prestataires = require('./mock-prestataires')
 const PrestataireModel = require('../models/prestataires')
 
 
-const sequelize = new Sequelize('JJ', 'root', '', {
+const sequelize = new Sequelize('pokedex', 'root', '', {
   host: 'localhost',
   dialect: 'mariadb',
   dialectOptions: {
