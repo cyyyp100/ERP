@@ -137,7 +137,10 @@ function CreationEvennement() {
         alert('Formulaire soumis, vérifiez la console pour les données.');
     };
 
-    
+    const soumettreForm = () => {
+      // Implémentez la logique de soumission du formulaire ici
+      console.log('Formulaire soumis');
+    };
   
   
   return (
@@ -219,8 +222,18 @@ function CreationEvennement() {
         {formData.typeLieu === 'Interieur' && (
           <div className="mb-3">
             <label>Questions pour Intérieur</label>
-            <input type="text" name="questionsInterieur" onChange={handleChange} value={formData.questionsInterieur} className="form-control" placeholder="Question pour les espaces intérieurs?" />
-          </div>
+            <form id="questionnaireForm">
+      <label htmlFor="besoinSignalétique">Besoin de signalétique :</label><br />
+      <input type="radio" id="oui" name="besoinSignalétique" value="Oui" />
+      <label htmlFor="oui">Oui</label><br />
+      <input type="radio" id="non" name="besoinSignalétique" value="Non" />
+      <label htmlFor="non">Non</label><br />
+
+      <label htmlFor="superficie">Superficie (en m²) :</label><br />
+      <input type="number" id="superficie" name="superficie" required /><br /><br />
+
+      <button type="button" onClick={soumettreForm}>Soumettre</button>
+    </form>          </div>
         )}
         {formData.typeLieu === 'Exterieur' && (
           <div className="mb-3">
@@ -261,7 +274,7 @@ function CreationEvennement() {
         Prix :<input type="number" name="prix" id="prix_sponsor" min="0" />
         <input type="submit" name="action" value="addSponsor" />
       </form>
-
+    
       <div>Animations</div>
       <form method="get" action="./controle">
         Nouvelle Animation: Nom <input type="text" name="nom_animation" />
@@ -269,10 +282,17 @@ function CreationEvennement() {
         Prix <input type="number" name="prix" id="prix_animation" min="0" />
         <input type="submit" name="action" value="addAnimation" />
       </form>
+
+      
+    
+
+      
     </div>
-        <button type="submit" className="btn btn-primary">Soumettre</button>
+    <button type="button" onclick="soumettreForm()">Soumettre</button>
       </form>
     </div>
+
+
     </div>
   );
 }
