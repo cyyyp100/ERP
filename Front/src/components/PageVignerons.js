@@ -5,7 +5,7 @@ function PageVigneron() {
     const [formData, setFormData] = useState({
         name: '',
         prix: 0,
-        cout: 0, // Supposons que vous voulez aussi envoyer le coût
+        cout: 0,
         contact: ''
     });
 
@@ -36,17 +36,17 @@ function PageVigneron() {
             alert('Erreur lors de l’ajout du vigneron');
         });
     };
+
     useEffect(() => {
-        // Faire une requête GET pour récupérer les données des vignerons
-        fetch('http://localhost:3001/api/vignerons') // Modifiez cette URL selon votre configuration API
+        fetch('http://localhost:3001/api/vignerons')
             .then(response => response.json())
             .then(data => {
-                setVignerons(data); // Stocker les données dans l'état
+                setVignerons(data); 
             })
             .catch(error => {
                 console.error('Erreur lors de la récupération des vignerons:', error);
             });
-    }, []); // Le tableau vide garantit que l'effet s'exécute une seule fois après le premier rendu
+    }, []);
 
     return (
         <div>
@@ -64,10 +64,11 @@ function PageVigneron() {
                 <p>Aucun vigneron à afficher</p>
             )}
 
-<form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit}>
                 Nouveau Vigneron: Nom <input type="text" name="name" onChange={handleInputChange} value={formData.name} />
                 Contact <input type="text" name="contact" onChange={handleInputChange} value={formData.contact} />
                 Prix <input type="number" name="prix" onChange={handleInputChange} value={formData.prix} min="0" />
+                Coût <input type="number" name="cout" onChange={handleInputChange} value={formData.cout} min="0" />
                 <input type="submit" value="Ajouter Vigneron" />
             </form>
         </div>

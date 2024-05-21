@@ -1,49 +1,51 @@
 const express = require('express');
 const router = express.Router();
-const fs = require('fs'); // Assurez-vous d'inclure le module fs pour lire les fichiers
-const evenements = require('../db/mock-evenement');  // Assurez-vous que le chemin est correct
+const { Evenement } = require('../db/sequelize');
 
-// Route pour obtenir tous les événements
-router.get('/', (req, res) => {
-    res.json(evenements);
-});
+// Route pour créer un nouvel événement
+router.post('/', async (req, res) => {
+    try {
+        const { nom, dateDebut, heureDebut, dateFin, heureFin, lieu, typeLieu, objectifs, questionsInterieur, questionsExterieur, questionsMixte, vignerons, prestataires } = req.body;
 
-router.get('/:id', (req, res) => {
-    const event = evenements.find(e => e.id === parseInt(req.params.id));
-    if (event) {
-        res.json(event);
-    } else {
-        res.status(404).send({ message: 'Événement non trouvé' });
+        // Validate required fields
+        if (!nom) {
+            return res.status(400).json({ error: 'The "nom" field is required.' });
+        }
+
+        const newEvenement = await Evenement.create({
+            nom,
+            dateDebut,
+            heureDebut,
+            dateFin,
+            heureFin,
+            lieu,
+            typeLieu,
+            objectifs: Array.isArray(objectifs) ? objectifs.join(', ') : objectifs,
+            questionsInterieur,
+            questionsExterieur,
+            questionsMixte,
+            vignerons: Array.isArray(vignerons) ? vignerons.join(', ') : vignerons,
+            prestataires: Array.isArray(prestataires) ? prestataires.join(', ') : prestataires
+        });
+
+        res.status(201).json(newEvenement);
+    } catch (error) {
+        console.error('Error creating Evenement:', error);
+        res.status(500).json({ error: 'An error occurred while creating the evenement.' });
     }
 });
 
-// Route pour créer un nouvel événement
-router.post('/', (req, res) => {
-    const {
-        dateDebut, heureDebut, dateFin, heureFin, lieu, typeLieu, objectifs,
-        questionsInterieur, questionsExterieur, questionsMixte,
-        vignerons, prestataires  
-    } = req.body;
 
-    const nouvelEvenement = {
-        id: evenements.length + 1,
-        dateDebut,
-        heureDebut,
-        dateFin,
-        heureFin,
-        lieu,
-        typeLieu,
-        objectifs: objectifs.join(', '),
-        questionsInterieur,
-        questionsExterieur,
-        questionsMixte,
-        vignerons: vignerons.map(v => v.name).join(', '),  
-        prestataires: prestataires.map(p => p.name).join(', '),  
-        created: new Date()
-    };
-
-    evenements.push(nouvelEvenement);
-    res.status(201).json(nouvelEvenement);
+// Route pour récupérer tous les événements
+router.get('/', async (req, res) => {
+    try {
+        const evenements = await Evenement.findAll();
+        res.json(evenements);
+    } catch (error) {
+        console.error('Erreur lors de la récupération des événements:', error);
+        res.status(500).send('Erreur lors de la récupération des événements');
+    }
 });
 
 module.exports = router;
+

@@ -1,70 +1,67 @@
-const validTypes = ["Festif","Lucratif","Non Lucratif","Inauguration","Anniversaire","Mariage","Action Caritative", "Fête Commerciale","Remercier","Lancement de Produit"]
-
-
-
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('Evenement', {
+  return sequelize.define('Evenement', {
       id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true
       },
-      name: {
+      nom: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique : {
-          msg: 'Le nom est déjà pris'
-        },
-        validate: {
-          notEmpty: {msg: 'l e nom ne peut pas être vide.'},
-          notNull: {msg: 'Le nom est une propriété requise'}
-        }
       },
-      nombre_de_personnes: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        validate: {
-          min: {
-            args : [0],
-            msg : 'le nombre de personnes doit être sup ou égales à 0.'
-          },
-          isInt : {msg: 'Utilisez uniquement des nombres entiers.'},
-          notNull:{msg: 'Le nombre est une propriété requise'}
-        }
+      dateDebut: {
+          type: DataTypes.DATE,
+          allowNull: false
+      },
+      heureDebut: {
+          type: DataTypes.TIME,
+          allowNull: false
+      },
+      dateFin: {
+          type: DataTypes.DATE,
+          allowNull: false
+      },
+      heureFin: {
+          type: DataTypes.TIME,
+          allowNull: false
       },
       lieu: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notEmpty: {msg: 'le lieu ne peut pas être vide.'},
-          notNull: {msg: 'Le lieu est une propriété requise'}
-        }
+          type: DataTypes.STRING,
+          allowNull: false
       },
-      Objectif_de_l_evenement: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        get(){
-          return this.getDataValue('Objectif_de_l_evenement').split(',')
-        },
-        set(types){
-          this.setDataValue('Objectif_de_l_evenement', types.join())
-        },
-        validate : {
-          isTypesValid(value) {
-            if (!value) {
-              throw new Error ('l\'évenement doit au moins avoir un objectif')
-            }
-            value.split(',').forEach(type => {
-              if (!validTypes.includes(type)) {
-                throw new Error (`L\'objectif d\'un evenement doit appartenir à la liste suivante : ${validTypes}`)
-              }
-            })
+      typeLieu: {
+          type: DataTypes.STRING,
+          allowNull: false
+      },
+      objectifs: {
+          type: DataTypes.STRING,
+          get() {
+              const rawValue = this.getDataValue('objectifs');
+              return rawValue ? rawValue.split(', ') : [];
+          },
+          set(value) {
+              this.setDataValue('objectifs', Array.isArray(value) ? value.join(', ') : '');
           }
-        }
+      },
+      questionsInterieur: {
+          type: DataTypes.STRING,
+          allowNull: true
+      },
+      questionsExterieur: {
+          type: DataTypes.STRING,
+          allowNull: true
+      },
+      questionsMixte: {
+          type: DataTypes.STRING,
+          allowNull: true
+      },
+      vignerons: {
+          type: DataTypes.STRING,
+          allowNull: true
+      },
+      prestataires: {
+          type: DataTypes.STRING,
+          allowNull: true
       }
-    },{
-        timestamps: true,
-        createdAt: 'created',
-        updatesAt: false
-    })
-  }
+  });
+};
