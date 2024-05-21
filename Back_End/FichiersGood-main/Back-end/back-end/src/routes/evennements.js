@@ -22,7 +22,7 @@ router.post('/', (req, res) => {
     const {
         dateDebut, heureDebut, dateFin, heureFin, lieu, typeLieu, objectifs,
         questionsInterieur, questionsExterieur, questionsMixte,
-        vignerons, prestataires  // Nouveaux champs pour vignerons et prestataires
+        vignerons, prestataires  
     } = req.body;
 
     const nouvelEvenement = {

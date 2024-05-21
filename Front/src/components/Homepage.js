@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import { Link } from 'react-router-dom';
 
 function HomePage() {
     const [events, setEvenements] = useState([]);

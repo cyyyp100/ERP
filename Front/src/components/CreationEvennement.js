@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './bootstrap.css'; 
 import CheckboxGroup from '../helpers/CheckboxGroup';
 import RangeSelector from '../helpers/RangeSelector';
+import CanvasDraw from "react-canvas-draw";
 
 
 function CreationEvennement() {
@@ -223,7 +224,9 @@ function CreationEvennement() {
           <div className="mb-3">
             <label>Questions pour Intérieur</label>
             <form id="questionnaireForm">
-      <label htmlFor="besoinSignalétique">Besoin de signalétique :</label><br />
+      
+
+            <label htmlFor="besoinSignalétique">Besoin de signalétique :</label><br />
       <input type="radio" id="oui" name="besoinSignalétique" value="Oui" />
       <label htmlFor="oui">Oui</label><br />
       <input type="radio" id="non" name="besoinSignalétique" value="Non" />
@@ -231,21 +234,63 @@ function CreationEvennement() {
 
       <label htmlFor="superficie">Superficie (en m²) :</label><br />
       <input type="number" id="superficie" name="superficie" required /><br /><br />
+    
+      <label htmlFor="Nombre_entrées_simples">Nombres d'entrées simples :</label><br />
+      <input type="number" id="nombre_entrées_simples" name="nombres d'entrées simples" required /><br /><br />
 
-      <button type="button" onClick={soumettreForm}>Soumettre</button>
-    </form>          </div>
+      <label htmlFor="Nombre_entrées_principales">Nombre d'entrées principales :</label><br />
+      <input type="number" id="nombre_entrées_principales" name="nombre d'entrées principales" required /><br /><br />
+    
+    </form>          
+    
+    
+    
+    
+    
+    </div>
         )}
+
+
+
+
+
         {formData.typeLieu === 'Exterieur' && (
           <div className="mb-3">
             <label>Questions pour Extérieur</label>
-            <input type="text" name="questionsExterieur" onChange={handleChange} value={formData.questionsExterieur} className="form-control" placeholder="Question pour les espaces extérieurs?" />
-          </div>
+            <label htmlFor="besoinSignalétique">Besoin de signalétique :</label><br />
+      <input type="radio" id="oui" name="besoinSignalétique" value="Oui" />
+      <label htmlFor="oui">Oui</label><br />
+      <input type="radio" id="non" name="besoinSignalétique" value="Non" />
+      <label htmlFor="non">Non</label><br />
+
+      <label htmlFor="Parking">Parking :</label><br />
+      <input type="radio" id="oui" name="Parking" value="Oui" />
+      <label htmlFor="oui">Oui</label><br />
+      <input type="radio" id="non" name="Parking" value="Non" />
+      <label htmlFor="non">Non</label><br />
+
+      <label htmlFor="Abris">Abris :</label><br />
+      <input type="radio" id="vent" name="Abris" value="Oui" />
+      <label htmlFor="vent">Vent</label><br />
+      <input type="radio" id="pluie" name="Abris" value="Non" />
+      <label htmlFor="pluie">Pluie</label><br />
+      <input type="radio" id="non" name="Abris" value="Non" />
+      <label htmlFor="non">Non</label><br />  
+      
+      <div>Forme</div>
+      <div className="mt-4">
+        <h2>Zone de dessin</h2>
+        <CanvasDraw />
+      </div>
+      </div>
         )}
         {formData.typeLieu === 'Interieur et Exterieur' && (
           <div className="mb-3">
             <label>Questions pour Intérieur et Extérieur</label>
             <input type="text" name="questionsMixte" onChange={handleChange} value={formData.questionsMixte} className="form-control" placeholder="Question pour les espaces mixtes?" />
           </div>
+          
+          
         )}
 
 <div className="container mt-4">
@@ -283,10 +328,6 @@ function CreationEvennement() {
         <input type="submit" name="action" value="addAnimation" />
       </form>
 
-      
-    
-
-      
     </div>
     <button type="button" onclick="soumettreForm()">Soumettre</button>
       </form>

@@ -10,9 +10,10 @@
   "dependencies": {
     "@fullcalendar/daygrid": "^6.1.11",
     "@fullcalendar/react": "^6.1.11",
+    "react-canvas-draw": "^1.2.1",
     "react-places-autocomplete": "^7.3.0",
     "react-router-dom": "^6.23.0",
-    "react-scripts": "^5.0.1"
+    "react-scripts": "^3.0.1"
   },
   "browserslist": {
     "production": [
