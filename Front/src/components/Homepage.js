@@ -4,7 +4,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import { Link } from 'react-router-dom';
 
 function HomePage() {
-    const [events, setEvenements] = useState([]);
+    const [evenements, setEvenements] = useState([]);
 
     useEffect(() => {
         fetch('http://localhost:3001/api/evenements')
@@ -17,7 +17,6 @@ function HomePage() {
             console.error('Fetch error:', error);
         });
     }, []);
-    
 
     return (
         <div>
@@ -43,25 +42,31 @@ function HomePage() {
             <FullCalendar
                 plugins={[dayGridPlugin]}
                 initialView="dayGridMonth"
-                events={events}
+                evenements={evenements.map(event => ({
+                    id: event.id,
+                    title: event.lieu,
+                    start: event.dateDebut,
+                    end: event.dateFin
+                }))}
                 locale="fr"
                 eventContent={renderEventContent} 
             />
-        <h2>Liste des Événements</h2>
-            {events.length > 0 ? (
-                events.map(evt => (
+            <h2>Liste des Événements</h2>
+            {evenements.length > 0 ? (
+                evenements.map(evt => (
                     <div key={evt.id}>
-                        <h2>{evt.name}</h2>
-                        <p>Lieu: {evt.lieu}</p>
-                        <p>Date: {new Date(evt.created).toLocaleDateString()}</p>
-                        <a className="nav-link" href={`/Evennement?id=${evt.id}`}>Voir Evennement</a>
+                        <h2>{evt.nom}</h2>
+                        <p>Type de Lieu: {evt.typeLieu}</p>
+                        <p>Date Début: {new Date(evt.dateDebut).toLocaleDateString()}</p>
+                        <p>Date Fin: {new Date(evt.dateFin).toLocaleDateString()}</p>
+                        <p>Objectifs: {evt.objectifs}</p>
+                        <p>Vignerons: {evt.vignerons}</p>
+                        <Link className="nav-link" to={`/Evennement?id=${evt.id}`}>Voir Evennement</Link>
                     </div>
                 ))
             ) : (
                 <p>Aucun événement à afficher</p>
             )}
-            
-            
         </div>
     );
 
@@ -73,7 +78,6 @@ function HomePage() {
             </div>
         );
     }
-    
 }
 
 export default HomePage;
