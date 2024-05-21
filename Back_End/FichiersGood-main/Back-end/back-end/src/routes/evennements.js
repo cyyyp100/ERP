@@ -47,5 +47,20 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/:id', async (req, res) => {
+    try {
+        const evenement = await Evenement.findByPk(req.params.id);
+        if (evenement) {
+            res.json(evenement);
+        } else {
+            res.status(404).send('Événement non trouvé');
+        }
+    } catch (error) {
+        console.error('Erreur lors de la récupération de l’événement:', error);
+        res.status(500).send('Erreur lors de la récupération de l’événement');
+    }
+});
+
+
 module.exports = router;
 

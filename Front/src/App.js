@@ -15,7 +15,8 @@ function App() {
                 <Route path="/creationEvennement" element={<CreationEvennement />} />
                 <Route path="/PageVignerons" element={<PageVignerons/>} />
                 <Route path="/Prestataires" element={<Homepage />} />
-                <Route path="/event/:id" component={EventPage} />
+                <Route path="/event/:id" element={<EventPage />} />
+
             </Routes>
         </Router>
     );

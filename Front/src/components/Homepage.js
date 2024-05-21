@@ -61,7 +61,8 @@ function HomePage() {
                         <p>Date Fin: {new Date(evt.dateFin).toLocaleDateString()}</p>
                         <p>Objectifs: {evt.objectifs}</p>
                         <p>Vignerons: {evt.vignerons}</p>
-                        <Link className="nav-link" to={`/Evennement?id=${evt.id}`}>Voir Evennement</Link>
+                        <Link className="nav-link" to={`/event/${evt.id}`}>Voir Evennement</Link>
+
                     </div>
                 ))
             ) : (
