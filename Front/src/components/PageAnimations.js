@@ -1,42 +1,42 @@
-// /mnt/data/PageVignerons.js
+// /mnt/data/PageAnimations.js
 
 import React, { useState, useEffect } from 'react';
 
-function PageVigneron() {
-    const [vignerons, setVignerons] = useState([]);
-    const [selectedVignerons, setSelectedVignerons] = useState({});
+function PageAnimations() {
+    const [animations, setAnimations] = useState([]);
+    const [selectedAnimations, setSelectedAnimations] = useState({});
     const [editForm, setEditForm] = useState({ visible: false, data: {} });
     const [addForm, setAddForm] = useState({ visible: false, data: { name: '', prix: '', cout: '', contact: '' } });
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        fetchVignerons();
+        fetchAnimations();
     }, []);
 
-    const fetchVignerons = (search = '') => {
-        const url = `http://localhost:3001/api/vignerons${search ? `?name=${search}` : ''}`;
+    const fetchAnimations = (search = '') => {
+        const url = `http://localhost:3001/api/animations${search ? `?name=${search}` : ''}`;
         fetch(url)
             .then(response => response.json())
             .then(data => {
-                setVignerons(data);
-                setSelectedVignerons({});
+                setAnimations(data);
+                setSelectedAnimations({});
             })
-            .catch(error => console.error('Erreur lors de la récupération des vignerons:', error));
+            .catch(error => console.error('Erreur lors de la récupération des animations:', error));
     };
 
     const handleCheckboxChange = (id) => {
-        setSelectedVignerons(prev => ({
+        setSelectedAnimations(prev => ({
             ...prev,
             [id]: !prev[id]
         }));
     };
 
     const handleDelete = () => {
-        Object.keys(selectedVignerons).forEach(id => {
-            if (selectedVignerons[id]) {
-                fetch(`http://localhost:3001/api/vignerons/${id}`, { method: 'DELETE' })
-                    .then(() => fetchVignerons()) // Refresh list after deletion
-                    .catch(error => console.error('Erreur lors de la suppression du vigneron:', error));
+        Object.keys(selectedAnimations).forEach(id => {
+            if (selectedAnimations[id]) {
+                fetch(`http://localhost:3001/api/animations/${id}`, { method: 'DELETE' })
+                    .then(() => fetchAnimations()) // Refresh list after deletion
+                    .catch(error => console.error('Erreur lors de la suppression de l’animation:', error));
             }
         });
     };
@@ -46,11 +46,11 @@ function PageVigneron() {
     };
 
     const handleSearch = () => {
-        fetchVignerons(searchTerm);
+        fetchAnimations(searchTerm);
     };
 
-    const showEditForm = (vigneron) => {
-        setEditForm({ visible: true, data: vigneron });
+    const showEditForm = (animation) => {
+        setEditForm({ visible: true, data: animation });
     };
 
     const handleEditChange = (event) => {
@@ -64,16 +64,16 @@ function PageVigneron() {
     const handleEditSubmit = (event) => {
         event.preventDefault();
         const { id, name, prix, cout, contact } = editForm.data;
-        fetch(`http://localhost:3001/api/vignerons/${id}`, {
+        fetch(`http://localhost:3001/api/animations/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, prix, cout, contact })
         })
         .then(() => {
-            fetchVignerons(); // Refresh list after update
+            fetchAnimations(); // Refresh list after update
             setEditForm({ visible: false, data: {} });
         })
-        .catch(error => console.error('Erreur lors de la modification du vigneron:', error));
+        .catch(error => console.error('Erreur lors de la modification de l’animation:', error));
     };
 
     const showAddForm = () => {
@@ -91,21 +91,21 @@ function PageVigneron() {
     const handleAddSubmit = (event) => {
         event.preventDefault();
         const { name, prix, cout, contact } = addForm.data;
-        fetch('http://localhost:3001/api/vignerons', {
+        fetch('http://localhost:3001/api/animations', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, prix, cout, contact })
         })
         .then(() => {
-            fetchVignerons(); // Refresh list after adding new vigneron
+            fetchAnimations(); // Refresh list after adding new animation
             setAddForm({ visible: false, data: {} });
         })
-        .catch(error => console.error('Erreur lors de l\'ajout du vigneron:', error));
+        .catch(error => console.error('Erreur lors de l\'ajout de l\'animation:', error));
     };
 
     return (
         <div>
-            <h1>Liste des Vignerons</h1>
+            <h1>Liste des Animations</h1>
             <input
                 type="text"
                 placeholder="Rechercher par nom"
@@ -113,7 +113,7 @@ function PageVigneron() {
                 onChange={handleSearchChange}
             />
             <button onClick={handleSearch}>Rechercher</button>
-            <button onClick={showAddForm}>Ajouter un Vigneron</button>
+            <button onClick={showAddForm}>Ajouter une Animation</button>
             {addForm.visible && (
                 <form onSubmit={handleAddSubmit}>
                     Nom: <input type="text" name="name" value={addForm.data.name} onChange={handleAddChange} />
@@ -123,21 +123,21 @@ function PageVigneron() {
                     <button type="submit">Ajouter</button>
                 </form>
             )}
-            {vignerons.filter(vigneron => vigneron.name.toLowerCase().includes(searchTerm.toLowerCase())).map(vigneron => (
-                <div key={vigneron.id}>
+            {animations.filter(animation => animation.name.toLowerCase().includes(searchTerm.toLowerCase())).map(animation => (
+                <div key={animation.id}>
                     <input
                         type="checkbox"
-                        checked={!!selectedVignerons[vigneron.id]}
-                        onChange={() => handleCheckboxChange(vigneron.id)}
+                        checked={!!selectedAnimations[animation.id]}
+                        onChange={() => handleCheckboxChange(animation.id)}
                     />
-                    {vigneron.name} - Prix: {vigneron.prix} €, Coût: {vigneron.cout} €, Contact: {vigneron.contact}
-                    {selectedVignerons[vigneron.id] && (
+                    {animation.name} - Prix: {animation.prix} €, Coût: {animation.cout} €, Contact: {animation.contact}
+                    {selectedAnimations[animation.id] && (
                         <>
-                            <button onClick={() => showEditForm(vigneron)}>Modifier</button>
+                            <button onClick={() => showEditForm(animation)}>Modifier</button>
                             <button onClick={handleDelete}>Supprimer</button>
                         </>
                     )}
-                    {editForm.visible && editForm.data.id === vigneron.id && (
+                    {editForm.visible && editForm.data.id === animation.id && (
                         <form onSubmit={handleEditSubmit}>
                             Nom: <input type="text" name="name" value={editForm.data.name} onChange={handleEditChange} />
                             Prix: <input type="number" name="prix" value={editForm.data.prix} onChange={handleEditChange} />
@@ -152,4 +152,4 @@ function PageVigneron() {
     );
 }
 
-export default PageVigneron;
+export default PageAnimations;

@@ -26,4 +26,44 @@ router.post('/', async (req, res) => {
     }
 });
 
+router.delete('/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const vigneron = await Vigneron.findByPk(id);
+        if (vigneron) {
+            await vigneron.destroy();
+            res.status(200).send('Vigneron supprimé avec succès');
+        } else {
+            res.status(404).send('Vigneron non trouvé');
+        }
+    } catch (error) {
+        console.error('Erreur lors de la suppression du vigneron:', error);
+        res.status(500).send('Erreur lors de la suppression du vigneron');
+    }
+});
+
+// Route pour mettre à jour un vigneron
+router.put('/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const { name, prix, cout, contact } = req.body;
+        const vigneron = await Vigneron.findByPk(id);
+        if (vigneron) {
+            vigneron.name = name;
+            vigneron.prix = prix;
+            vigneron.cout = cout;
+            vigneron.contact = contact;
+            await vigneron.save();
+            res.json(vigneron);
+        } else {
+            res.status(404).send('Vigneron non trouvé');
+        }
+    } catch (error) {
+        console.error('Erreur lors de la mise à jour du vigneron:', error);
+        res.status(500).send('Erreur lors de la mise à jour du vigneron');
+    }
+});
+
+module.exports = router;
+
 module.exports = router;
