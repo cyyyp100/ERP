@@ -6,21 +6,31 @@ import CanvasDraw from "react-canvas-draw";
 
 function CreationEvennement() {
     const [vignerons, setVignerons] = useState([]);
+    const [prestataires, setPrestataires] = useState([]);
+    const [animations, setAnimations] = useState([]);
+    const [sponsors, setSponsors] = useState([]);
     const [eventVignerons, setEventVignerons] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [electricite, setElectricite] = useState('');
     const [eau, setEau] = useState('');
     const [proximiteDirecte, setProximiteDirecte] = useState('');
-
     const [poubelle, setPoubelle] = useState('');
     const [toilette, setToilette] = useState('');
+
+
     const [vigneronData, setVigneronData] = useState({
         name: '',
         prix: 0,
         cout: 0,
         contact: ''
     });
+    const [prestataireData, setPrestataireData] = useState({ name: '', contact: '', prix: 0, cout: 0 });
+    const [animationData, setAnimationData] = useState({ name: '', contact: '', prix: 0, cout: 0 });
+    const [sponsorData, setSponsorData] = useState({ name: '', contact: '', prix: 0, cout: 0 });
 
+    const [eventPrestataires, setEventPrestataires] = useState([]);
+    const [eventAnimations, setEventAnimations] = useState([]);
+    const [eventSponsors, setEventSponsors] = useState([]);
     const handleVigneronChange = (event) => {
         const { name, value } = event.target;
         setVigneronData(prevState => ({
@@ -28,36 +38,82 @@ function CreationEvennement() {
             [name]: value
         }));
     };
+    
+    const handleVigneronSubmit = async (event) => {
+        event.preventDefault();
+        const { name, prix, cout, contact } = vigneronData;
+    
+        fetch('http://localhost:3001/api/vignerons', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, prix, cout, contact })
+        })
+        .then(() => {
+            fetchVignerons(); // Refresh list after adding new vigneron
+            setVigneronData({ name: '', prix: 0, cout: 0, contact: '' }); // Reset form fields
+            alert('Vigneron ajouté avec succès!');
+        })
+        .catch(error => console.error('Erreur lors de l\'ajout du vigneron:', error));
+    };
+    
+    // Fetch function to refresh the vignerons list
+    const fetchVignerons = async () => {
+        try {
+            const response = await fetch('http://localhost:3001/api/vignerons');
+            const data = await response.json();
+            setVignerons(data);
+        } catch (error) {
+            console.error('Erreur lors de la récupération des vignerons:', error);
+        }
+    };
+    
 
-    const handleVigneronSubmit = (event) => {
-      event.preventDefault();
-      fetch('http://localhost:3001/api/vignerons', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(vigneronData)  // Corrected this line
-      })
-      .then(response => response.json())
-      .then(data => {
-          setVignerons([...vignerons, data]);
-          alert('Vigneron ajouté avec succès!');
-      })
-      .catch(error => {
-          console.error('Erreur lors de l’ajout du vigneron:', error);
-          alert('Erreur lors de l’ajout du vigneron');
-      });
-  };
-
+    const fetchPrestataires = async () => {
+        try {
+            const response = await fetch('http://localhost:3001/api/prestataires');
+            const data = await response.json();
+            setPrestataires(data);
+        } catch (error) {
+            console.error('Erreur lors de la récupération des prestataires:', error);
+        }
+    };
+    
+    const fetchAnimations = async () => {
+        try {
+            const response = await fetch('http://localhost:3001/api/animations');
+            const data = await response.json();
+            setAnimations(data);
+        } catch (error) {
+            console.error('Erreur lors de la récupération des animations:', error);
+        }
+    };
+    
+    const fetchSponsors = async () => {
+        try {
+            const response = await fetch('http://localhost:3001/api/sponsors');
+            const data = await response.json();
+            setSponsors(data);
+        } catch (error) {
+            console.error('Erreur lors de la récupération des sponsors:', error);
+        }
+    };
+    
+    // const fetchMateriels = async () => {
+    //     try {
+    //         const response = await fetch('http://localhost:3001/api/materiels');
+    //         const data = await response.json();
+    //         setMateriels(data);
+    //     } catch (error) {
+    //         console.error('Erreur lors de la récupération des matériels:', error);
+    //     }
+    // };
+    
+    // useEffect to load initial data
     useEffect(() => {
-        fetch('http://localhost:3001/api/vignerons')
-            .then(response => response.json())
-            .then(data => {
-                setVignerons(data);
-            })
-            .catch(error => {
-                console.error('Erreur lors de la récupération des vignerons:', error);
-            });
+        fetchVignerons();
+        fetchPrestataires();
+        fetchAnimations();
+        fetchSponsors();
     }, []);
 
     const handleVigneronSelect = (vigneronId) => {
@@ -76,6 +132,121 @@ function CreationEvennement() {
 
     const filteredVignerons = vignerons.filter(vigneron => 
         vigneron.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const handlePrestataireChange = (event) => {
+        const { name, value } = event.target;
+        setPrestataireData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    const handlePrestataireSubmit = async (event) => {
+        event.preventDefault();
+        const { name, prix, cout, contact } = prestataireData;
+    
+        fetch('http://localhost:3001/api/prestataires', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, prix, cout, contact })
+        })
+        .then(() => {
+            fetchPrestataires(); // Refresh list after adding new prestataire
+            setPrestataireData({ name: '', prix: 0, cout: 0, contact: '' }); // Reset form fields
+            alert('Prestataire ajouté avec succès!');
+        })
+        .catch(error => console.error('Erreur lors de l\'ajout du prestataire:', error));
+    };
+
+    const handleAnimationChange = (event) => {
+        const { name, value } = event.target;
+        setAnimationData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    const handleAnimationSubmit = async (event) => {
+        event.preventDefault();
+        const { name, prix, cout, contact } = animationData;
+    
+        fetch('http://localhost:3001/api/animations', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, prix, cout, contact })
+        })
+        .then(() => {
+            fetchAnimations(); // Refresh list after adding new animation
+            setAnimationData({ name: '', prix: 0, cout: 0, contact: '' }); // Reset form fields
+            alert('Animation ajoutée avec succès!');
+        })
+        .catch(error => console.error('Erreur lors de l\'ajout de l\'animation:', error));
+    };
+
+    const handleSponsorChange = (event) => {
+        const { name, value } = event.target;
+        setSponsorData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    const handleSponsorSubmit = async (event) => {
+        event.preventDefault();
+        const { name, prix, cout, contact } = sponsorData;
+    
+        fetch('http://localhost:3001/api/sponsors', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, prix, cout, contact })
+        })
+        .then(() => {
+            fetchSponsors(); // Refresh list after adding new sponsor
+            setSponsorData({ name: '', prix: 0, cout: 0, contact: '' }); // Reset form fields
+            alert('Sponsor ajouté avec succès!');
+        })
+        .catch(error => console.error('Erreur lors de l\'ajout du sponsor:', error));
+    };
+
+    const handlePrestataireSelect = (prestataireId) => {
+        setEventPrestataires(prevState => {
+            if (prevState.includes(prestataireId)) {
+                return prevState.filter(id => id !== prestataireId);
+            } else {
+                return [...prevState, prestataireId];
+            }
+        });
+    };
+
+    const handleAnimationSelect = (animationId) => {
+        setEventAnimations(prevState => {
+            if (prevState.includes(animationId)) {
+                return prevState.filter(id => id !== animationId);
+            } else {
+                return [...prevState, animationId];
+            }
+        });
+    };
+
+    const handleSponsorSelect = (sponsorId) => {
+        setEventSponsors(prevState => {
+            if (prevState.includes(sponsorId)) {
+                return prevState.filter(id => id !== sponsorId);
+            } else {
+                return [...prevState, sponsorId];
+            }
+        });
+    };
+
+    const filteredPrestataires = prestataires.filter(prestataire => 
+        prestataire.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    const filteredAnimations = animations.filter(animation => 
+        animation.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    const filteredSponsors = sponsors.filter(sponsor => 
+        sponsor.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const [formData, setFormData] = useState({
@@ -419,6 +590,89 @@ function CreationEvennement() {
                                 ))}
                             </ul>
                         </div>
+                        <div>
+                <h2>Prestataires</h2>
+                <form onSubmit={handlePrestataireSubmit}>
+                    Nouveau Prestataire: Nom 
+                    <input type="text" name="name" onChange={handlePrestataireChange} value={prestataireData.name} />
+                    Contact 
+                    <input type="text" name="contact" onChange={handlePrestataireChange} value={prestataireData.contact} />
+                    Prix 
+                    <input type="number" name="prix" onChange={handlePrestataireChange} value={prestataireData.prix} min="0" />
+                    Coût 
+                    <input type="number" name="cout" onChange={handlePrestataireChange} value={prestataireData.cout} min="0" />
+                    <input type="submit" value="Ajouter Prestataire" />
+                </form>
+                <input type="text" placeholder="Rechercher par nom" value={searchTerm} onChange={handleSearchChange} />
+                <ul>
+                    {filteredPrestataires.map(prestataire => (
+                        <li key={prestataire.id}>
+                            <input
+                                type="checkbox"
+                                checked={eventPrestataires.includes(prestataire.id)}
+                                onChange={() => handlePrestataireSelect(prestataire.id)}
+                            />
+                            {prestataire.name} - {prestataire.contact} - {prestataire.prix}€ - {prestataire.cout}€
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
+            <div>
+                <h2>Animations</h2>
+                <form onSubmit={handleAnimationSubmit}>
+                    Nouvelle Animation: Nom 
+                    <input type="text" name="name" onChange={handleAnimationChange} value={animationData.name} />
+                    Contact 
+                    <input type="text" name="contact" onChange={handleAnimationChange} value={animationData.contact} />
+                    Prix 
+                    <input type="number" name="prix" onChange={handleAnimationChange} value={animationData.prix} min="0" />
+                    Coût 
+                    <input type="number" name="cout" onChange={handleAnimationChange} value={animationData.cout} min="0" />
+                    <input type="submit" value="Ajouter Animation" />
+                </form>
+                <input type="text" placeholder="Rechercher par nom" value={searchTerm} onChange={handleSearchChange} />
+                <ul>
+                    {filteredAnimations.map(animation => (
+                        <li key={animation.id}>
+                            <input
+                                type="checkbox"
+                                checked={eventAnimations.includes(animation.id)}
+                                onChange={() => handleAnimationSelect(animation.id)}
+                            />
+                            {animation.name} - {animation.contact} - {animation.prix}€ - {animation.cout}€
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
+            <div>
+                <h2>Sponsors</h2>
+                <form onSubmit={handleSponsorSubmit}>
+                    Nouveau Sponsor: Nom 
+                    <input type="text" name="name" onChange={handleSponsorChange} value={sponsorData.name} />
+                    Contact 
+                    <input type="text" name="contact" onChange={handleSponsorChange} value={sponsorData.contact} />
+                    Prix 
+                    <input type="number" name="prix" onChange={handleSponsorChange} value={sponsorData.prix} min="0" />
+                    Coût 
+                    <input type="number" name="cout" onChange={handleSponsorChange} value={sponsorData.cout} min="0" />
+                    <input type="submit" value="Ajouter Sponsor" />
+                </form>
+                <input type="text" placeholder="Rechercher par nom" value={searchTerm} onChange={handleSearchChange} />
+                <ul>
+                    {filteredSponsors.map(sponsor => (
+                        <li key={sponsor.id}>
+                            <input
+                                type="checkbox"
+                                checked={eventSponsors.includes(sponsor.id)}
+                                onChange={() => handleSponsorSelect(sponsor.id)}
+                            />
+                            {sponsor.name} - {sponsor.contact} - {sponsor.prix}€ - {sponsor.cout}€
+                        </li>
+                    ))}
+                </ul>
+            </div>
                     </div>
                     
                     <button type="submit">Soumettre</button>
