@@ -36,6 +36,18 @@ function HomePage() {
                         <li className="nav-item">
                             <a className="nav-link" href="/PageVignerons">Vignerons</a>
                         </li>
+                        <li className="nav-item">
+                            <a className="nav-link" href="/PagePrestataires">Prestataire</a>
+                        </li>
+                        <li className="nav-item">
+                            <a className="nav-link" href="/PageAnimations">Animations</a>
+                        </li>
+                        <li className="nav-item">
+                            <a className="nav-link" href="/PageSponsors">Sponsors</a>
+                        </li>
+                        <li className="nav-item">
+                            <a className="nav-link" href="/PageMateriels">Matériels</a>
+                        </li>
                     </ul>
                 </div>
             </nav>
