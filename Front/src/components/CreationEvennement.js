@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './bootstrap.css'; 
 import CheckboxGroup from '../helpers/CheckboxGroup';
 import RangeSelector from '../helpers/RangeSelector';
@@ -6,14 +6,35 @@ import CanvasDraw from "react-canvas-draw";
 
 function CreationEvennement() {
     const [vignerons, setVignerons] = useState([]);
+    const [prestataires, setPrestataires] = useState([]);
+    const [animations, setAnimations] = useState([]);
+    const [sponsors, setSponsors] = useState([]);
     const [eventVignerons, setEventVignerons] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
+    const [searchTermVignerons, setSearchTermVignerons] = useState('');
+    const [searchTermPrestataires, setSearchTermPrestataires] = useState('');
+    const [searchTermAnimations, setSearchTermAnimations] = useState('');
+    const [searchTermSponsors, setSearchTermSponsors] = useState('');
+
+    const [electricite, setElectricite] = useState('');
+    const [eau, setEau] = useState('');
+    const [proximiteDirecte, setProximiteDirecte] = useState('');
+    const [poubelle, setPoubelle] = useState('');
+    const [toilette, setToilette] = useState('');
+
+
     const [vigneronData, setVigneronData] = useState({
         name: '',
         prix: 0,
         cout: 0,
         contact: ''
     });
+    const [prestataireData, setPrestataireData] = useState({ name: '', contact: '', prix: 0, cout: 0 });
+    const [animationData, setAnimationData] = useState({ name: '', contact: '', prix: 0, cout: 0 });
+    const [sponsorData, setSponsorData] = useState({ name: '', contact: '', prix: 0, cout: 0 });
+
+    const [eventPrestataires, setEventPrestataires] = useState([]);
+    const [eventAnimations, setEventAnimations] = useState([]);
+    const [eventSponsors, setEventSponsors] = useState([]);
 
     const handleVigneronChange = (event) => {
         const { name, value } = event.target;
@@ -22,37 +43,89 @@ function CreationEvennement() {
             [name]: value
         }));
     };
+    
+    const handleVigneronSubmit = async (event) => {
+        event.preventDefault();
+        const { name, prix, cout, contact } = vigneronData;
 
-    const handleVigneronSubmit = (event) => {
-      event.preventDefault();
-      fetch('http://localhost:3001/api/vignerons', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(vigneronData)  // Corrected this line
-      })
-      .then(response => response.json())
-      .then(data => {
-          setVignerons([...vignerons, data]);
-          alert('Vigneron ajouté avec succès!');
-      })
-      .catch(error => {
-          console.error('Erreur lors de l’ajout du vigneron:', error);
-          alert('Erreur lors de l’ajout du vigneron');
-      });
-  };
-
-    useEffect(() => {
-        fetch('http://localhost:3001/api/vignerons')
-            .then(response => response.json())
-            .then(data => {
-                setVignerons(data);
-            })
-            .catch(error => {
-                console.error('Erreur lors de la récupération des vignerons:', error);
+        try {
+            const response = await fetch('http://localhost:3001/api/vignerons', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, prix, cout, contact })
             });
+
+            if (response.ok) {
+                const newVigneron = await response.json();
+                setVignerons(prevVignerons => [...prevVignerons, newVigneron]);
+                setVigneronData({ name: '', prix: 0, cout: 0, contact: '' });
+                alert('Vigneron ajouté avec succès!');
+            }
+        } catch (error) {
+            console.error('Erreur lors de l\'ajout du vigneron:', error);
+        }
+    };
+    
+    
+    // Fetch function to refresh the vignerons list
+    const fetchVignerons = useCallback(async () => {
+        try {
+            const response = await fetch('http://localhost:3001/api/vignerons');
+            const data = await response.json();
+            setVignerons(data);
+        } catch (error) {
+            console.error('Erreur lors de la récupération des vignerons:', error);
+        }
     }, []);
+    
+
+    const fetchPrestataires = useCallback(async () => {
+        try {
+            const response = await fetch('http://localhost:3001/api/prestataires');
+            const data = await response.json();
+            setPrestataires(data);
+        } catch (error) {
+            console.error('Erreur lors de la récupération des prestataires:', error);
+        }
+    }, []);
+
+    const fetchAnimations = useCallback(async () => {
+        try {
+            const response = await fetch('http://localhost:3001/api/animations');
+            const data = await response.json();
+            setAnimations(data);
+        } catch (error) {
+            console.error('Erreur lors de la récupération des animations:', error);
+        }
+    }, []);
+
+    const fetchSponsors = useCallback(async () => {
+        try {
+            const response = await fetch('http://localhost:3001/api/sponsors');
+            const data = await response.json();
+            setSponsors(data);
+        } catch (error) {
+            console.error('Erreur lors de la récupération des sponsors:', error);
+        }
+    }, []);
+    
+    // const fetchMateriels = async () => {
+    //     try {
+    //         const response = await fetch('http://localhost:3001/api/materiels');
+    //         const data = await response.json();
+    //         setMateriels(data);
+    //     } catch (error) {
+    //         console.error('Erreur lors de la récupération des matériels:', error);
+    //     }
+    // };
+    
+    // useEffect to load initial data
+    useEffect(() => {
+        fetchVignerons();
+        fetchPrestataires();
+        fetchAnimations();
+        fetchSponsors();
+    }, [fetchVignerons, fetchPrestataires, fetchAnimations, fetchSponsors]);
 
     const handleVigneronSelect = (vigneronId) => {
         setEventVignerons(prevState => {
@@ -64,13 +137,155 @@ function CreationEvennement() {
         });
     };
 
-    const handleSearchChange = (event) => {
-        setSearchTerm(event.target.value);
+    const handleSearchChangeVignerons = (event) => {
+        setSearchTermVignerons(event.target.value);
+    };
+    
+    const handleSearchChangePrestataires = (event) => {
+        setSearchTermPrestataires(event.target.value);
+    };
+    
+    const handleSearchChangeAnimations = (event) => {
+        setSearchTermAnimations(event.target.value);
+    };
+    
+    const handleSearchChangeSponsors = (event) => {
+        setSearchTermSponsors(event.target.value);
+    };
+    
+
+    const filteredVignerons = vignerons.filter(vigneron =>
+        vigneron.name.toLowerCase().includes(searchTermVignerons.toLowerCase())
+    );
+    
+    const filteredPrestataires = prestataires.filter(prestataire =>
+        prestataire.name.toLowerCase().includes(searchTermPrestataires.toLowerCase())
+    );
+    
+    const filteredAnimations = animations.filter(animation =>
+        animation.name.toLowerCase().includes(searchTermAnimations.toLowerCase())
+    );
+    
+    const filteredSponsors = sponsors.filter(sponsor =>
+        sponsor.name.toLowerCase().includes(searchTermSponsors.toLowerCase())
+    );
+    
+
+    const handlePrestataireChange = (event) => {
+        const { name, value } = event.target;
+        setPrestataireData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
     };
 
-    const filteredVignerons = vignerons.filter(vigneron => 
-        vigneron.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const handlePrestataireSubmit = async (event) => {
+        event.preventDefault();
+        const { name, prix, cout, contact } = prestataireData;
+    
+        fetch('http://localhost:3001/api/prestataires', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache' },
+            body: JSON.stringify({ name, prix, cout, contact })
+        })
+        .then(() => {
+            fetchPrestataires(); // Refresh list after adding new prestataire
+            setPrestataireData({ name: '', prix: 0, cout: 0, contact: '' }); // Reset form fields
+            alert('Prestataire ajouté avec succès!');
+        })
+        .catch(error => console.error('Erreur lors de l\'ajout du prestataire:', error));
+    };
+
+    const handleAnimationChange = (event) => {
+        const { name, value } = event.target;
+        setAnimationData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    const handleAnimationSubmit = async (event) => {
+        event.preventDefault();
+        const { name, prix, cout, contact } = animationData;
+
+        try {
+            const response = await fetch('http://localhost:3001/api/animations', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, prix, cout, contact })
+            });
+
+            if (response.ok) {
+                const newAnimation = await response.json();
+                setAnimations(prevAnimations => [...prevAnimations, newAnimation]);
+                setAnimationData({ name: '', prix: 0, cout: 0, contact: '' });
+                alert('Animation ajoutée avec succès!');
+            }
+        } catch (error) {
+            console.error('Erreur lors de l ajout de l animation:', error);
+        }
+    };
+
+    const handleSponsorChange = (event) => {
+        const { name, value } = event.target;
+        setSponsorData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    const handleSponsorSubmit = async (event) => {
+        event.preventDefault();
+        const { name, prix, cout, contact } = sponsorData;
+
+        try {
+            const response = await fetch('http://localhost:3001/api/sponsors', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, prix, cout, contact })
+            });
+
+            if (response.ok) {
+                const newSponsor = await response.json();
+                setSponsors(prevSponsors => [...prevSponsors, newSponsor]);
+                setSponsorData({ name: '', prix: 0, cout: 0, contact: '' });
+                alert('Sponsor ajouté avec succès!');
+            }
+        } catch (error) {
+            console.error('Erreur lors de l ajout du sponsor:', error);
+        }
+    };
+
+    const handlePrestataireSelect = (prestataireId) => {
+        setEventPrestataires(prevState => {
+            if (prevState.includes(prestataireId)) {
+                return prevState.filter(id => id !== prestataireId);
+            } else {
+                return [...prevState, prestataireId];
+            }
+        });
+    };
+
+    const handleAnimationSelect = (animationId) => {
+        setEventAnimations(prevState => {
+            if (prevState.includes(animationId)) {
+                return prevState.filter(id => id !== animationId);
+            } else {
+                return [...prevState, animationId];
+            }
+        });
+    };
+
+    const handleSponsorSelect = (sponsorId) => {
+        setEventSponsors(prevState => {
+            if (prevState.includes(sponsorId)) {
+                return prevState.filter(id => id !== sponsorId);
+            } else {
+                return [...prevState, sponsorId];
+            }
+        });
+    };
 
     const [formData, setFormData] = useState({
         nom: '',
@@ -83,7 +298,11 @@ function CreationEvennement() {
         objectifs: [],
         questionsInterieur: '',
         questionsExterieur: '',
-        questionsMixte: ''
+        questionsMixte: '',
+        questionsInfrastructures: '',
+        materielNecessaire: [{ nom: '', quantite: 1 }],
+        materielEnStock: [],
+        materielSurSite: []
     });
 
     const handleInputChange = (event) => {
@@ -215,6 +434,52 @@ function CreationEvennement() {
                             <input type="number" id="nombre_entrées_simples" name="nombres d'entrées simples" required /><br /><br />
                             <label htmlFor="Nombre_entrées_principales">Nombre d'entrées principales :</label><br />
                             <input type="number" id="nombre_entrées_principales" name="nombre d'entrées principales" required /><br /><br />
+                            <label>Questions sur les Infrastructures</label>
+                        <label>Electricité :</label><br />
+    <input type="radio" id="oui" name="Electricité" value="Oui" />
+    <label htmlFor="oui">Oui</label><br />
+    <input type="radio" id="non" name="Electricité" value="Non" />
+    <label htmlFor="non">Non</label><br />
+
+
+<label htmlFor="electricite">Electricité :</label><br />
+<input type="radio" id="electricite-oui" name="electricite" value="Oui" onChange={() => setElectricite('Oui')} />
+<label htmlFor="electricite-oui">Oui</label><br />
+<input type="radio" id="electricite-non" name="electricite" value="Non" onChange={() => setElectricite('Non')} />
+<label htmlFor="electricite-non">Non</label><br />
+{electricite === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité de l'électricité.</div>}
+{electricite === 'Oui' && (
+  <div>
+    <label htmlFor="proximiteDirecte">Proximité directe :</label><br />
+    <input type="radio" id="proximiteDirecte-oui" name="proximiteDirecte" value="Oui" onChange={() => setProximiteDirecte('Oui')} />
+    <label htmlFor="proximiteDirecte-oui">Oui</label><br />
+    <input type="radio" id="proximiteDirecte-non" name="proximiteDirecte" value="Non" onChange={() => setProximiteDirecte('Non')} />
+    <label htmlFor="proximiteDirecte-non">Non</label><br />
+    {proximiteDirecte === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité de l'électricité à proximité (Moins de 50 mètres du lieu).</div>}
+
+  </div>
+)}
+
+<label htmlFor="eau">Eau :</label><br />
+<input type="radio" id="eau-oui" name="eau" value="Oui" onChange={() => setEau('Oui')} />
+<label htmlFor="eau-oui">Oui</label><br />
+<input type="radio" id="eau-non" name="eau" value="Non" onChange={() => setEau('Non')} />
+<label htmlFor="eau-non">Non</label><br />
+{eau === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité de l'eau.</div>}
+
+<label htmlFor="poubelle">Poubelle :</label><br />
+<input type="radio" id="poubelle-oui" name="poubelle" value="Oui" onChange={() => setPoubelle('Oui')} />
+<label htmlFor="poubelle-oui">Oui</label><br />
+<input type="radio" id="poubelle-non" name="poubelle" value="Non" onChange={() => setPoubelle('Non')} />
+<label htmlFor="poubelle-non">Non</label><br />
+{poubelle === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité des poubelles.</div>}
+
+<label htmlFor="toilette">Toilette :</label><br />
+<input type="radio" id="toilette-oui" name="toilette" value="Oui" onChange={() => setToilette('Oui')} />
+<label htmlFor="toilette-oui">Oui</label><br />
+<input type="radio" id="toilette-non" name="toilette" value="Non" onChange={() => setToilette('Non')} />
+<label htmlFor="toilette-non">Non</label><br />
+{toilette === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité des toilettes.</div>}
                         </div>
                     )}
 
@@ -243,6 +508,43 @@ function CreationEvennement() {
                                 <h2>Zone de dessin</h2>
                                 <CanvasDraw />
                             </div>
+
+      <label htmlFor="electricite">Electricité :</label><br />
+      <input type="radio" id="electricite-oui" name="electricite" value="Oui" onChange={() => setElectricite('Oui')} />
+      <label htmlFor="electricite-oui">Oui</label><br />
+      <input type="radio" id="electricite-non" name="electricite" value="Non" onChange={() => setElectricite('Non')} />
+      <label htmlFor="electricite-non">Non</label><br />
+      {electricite === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité de l'électricité.</div>}
+      {electricite === 'Oui' && (
+        <div>
+          <label htmlFor="proximiteDirecte">Proximité directe :</label><br />
+          <input type="radio" id="proximiteDirecte-oui" name="proximiteDirecte" value="Oui" onChange={() => setProximiteDirecte('Oui')} />
+          <label htmlFor="proximiteDirecte-oui">Oui</label><br />
+          <input type="radio" id="proximiteDirecte-non" name="proximiteDirecte" value="Non" onChange={() => setProximiteDirecte('Non')} />
+          <label htmlFor="proximiteDirecte-non">Non</label><br />
+        </div>
+      )}
+
+      <label htmlFor="eau">Eau :</label><br />
+      <input type="radio" id="eau-oui" name="eau" value="Oui" onChange={() => setEau('Oui')} />
+      <label htmlFor="eau-oui">Oui</label><br />
+      <input type="radio" id="eau-non" name="eau" value="Non" onChange={() => setEau('Non')} />
+      <label htmlFor="eau-non">Non</label><br />
+      {eau === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité de l'eau.</div>}
+
+      <label htmlFor="poubelle">Poubelle :</label><br />
+      <input type="radio" id="poubelle-oui" name="poubelle" value="Oui" onChange={() => setPoubelle('Oui')} />
+      <label htmlFor="poubelle-oui">Oui</label><br />
+      <input type="radio" id="poubelle-non" name="poubelle" value="Non" onChange={() => setPoubelle('Non')} />
+      <label htmlFor="poubelle-non">Non</label><br />
+      {poubelle === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité des poubelles.</div>}
+
+      <label htmlFor="toilette">Toilette :</label><br />
+      <input type="radio" id="toilette-oui" name="toilette" value="Oui" onChange={() => setToilette('Oui')} />
+      <label htmlFor="toilette-oui">Oui</label><br />
+      <input type="radio" id="toilette-non" name="toilette" value="Non" onChange={() => setToilette('Non')} />
+      <label htmlFor="toilette-non">Non</label><br />
+      {toilette === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité des toilettes.</div>}
                         </div>
                     )}
                     
@@ -250,32 +552,68 @@ function CreationEvennement() {
                         <div className="mb-3">
                             <label>Questions pour Intérieur et Extérieur</label>
                             <input type="text" name="questionsMixte" onChange={handleInputChange} value={formData.questionsMixte} className="form-control" placeholder="Question pour les espaces mixtes?" />
+
+<label htmlFor="electricite">Electricité :</label><br />
+<input type="radio" id="electricite-oui" name="electricite" value="Oui" onChange={() => setElectricite('Oui')} />
+<label htmlFor="electricite-oui">Oui</label><br />
+<input type="radio" id="electricite-non" name="electricite" value="Non" onChange={() => setElectricite('Non')} />
+<label htmlFor="electricite-non">Non</label><br />
+{electricite === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité de l'électricité.</div>}
+{electricite === 'Oui' && (
+  <div>
+    <label htmlFor="proximiteDirecte">Proximité directe :</label><br />
+    <input type="radio" id="proximiteDirecte-oui" name="proximiteDirecte" value="Oui" onChange={() => setProximiteDirecte('Oui')} />
+    <label htmlFor="proximiteDirecte-oui">Oui</label><br />
+    <input type="radio" id="proximiteDirecte-non" name="proximiteDirecte" value="Non" onChange={() => setProximiteDirecte('Non')} />
+    <label htmlFor="proximiteDirecte-non">Non</label><br />
+  </div>
+)}
+
+<label htmlFor="eau">Eau :</label><br />
+<input type="radio" id="eau-oui" name="eau" value="Oui" onChange={() => setEau('Oui')} />
+<label htmlFor="eau-oui">Oui</label><br />
+<input type="radio" id="eau-non" name="eau" value="Non" onChange={() => setEau('Non')} />
+<label htmlFor="eau-non">Non</label><br />
+{eau === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité de l'eau.</div>}
+
+<label htmlFor="poubelle">Poubelle :</label><br />
+<input type="radio" id="poubelle-oui" name="poubelle" value="Oui" onChange={() => setPoubelle('Oui')} />
+<label htmlFor="poubelle-oui">Oui</label><br />
+<input type="radio" id="poubelle-non" name="poubelle" value="Non" onChange={() => setPoubelle('Non')} />
+<label htmlFor="poubelle-non">Non</label><br />
+{poubelle === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité des poubelles.</div>}
+
+<label htmlFor="toilette">Toilette :</label><br />
+<input type="radio" id="toilette-oui" name="toilette" value="Oui" onChange={() => setToilette('Oui')} />
+<label htmlFor="toilette-oui">Oui</label><br />
+<input type="radio" id="toilette-non" name="toilette" value="Non" onChange={() => setToilette('Non')} />
+<label htmlFor="toilette-non">Non</label><br />
+{toilette === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité des toilettes.</div>}
                         </div>
                     )}
 
                     <div className="container mt-4">
                         <h1>Organisation personnel</h1>
-                        <div>Vigneron</div>
                         <form onSubmit={handleVigneronSubmit}>
-                            Nouveau Vigneron: Nom 
-                            <input type="text" name="name" onChange={handleVigneronChange} value={vigneronData.name} />
-                            Contact 
-                            <input type="text" name="contact" onChange={handleVigneronChange} value={vigneronData.contact} />
-                            Prix 
-                            <input type="number" name="prix" onChange={handleVigneronChange} value={vigneronData.prix} min="0" />
-                            Coût 
-                            <input type="number" name="cout" onChange={handleVigneronChange} value={vigneronData.cout} min="0" />
-                            <input type="submit" value="Ajouter Vigneron" />
-                        </form>
+                    Nouveau Vigneron: Nom
+                    <input type="text" name="name" value={vigneronData.name} onChange={e => setVigneronData({ ...vigneronData, name: e.target.value })} />
+                    Contact
+                    <input type="text" name="contact" value={vigneronData.contact} onChange={e => setVigneronData({ ...vigneronData, contact: e.target.value })} />
+                    Prix
+                    <input type="number" name="prix" value={vigneronData.prix} min="0" onChange={e => setVigneronData({ ...vigneronData, prix: parseInt(e.target.value, 10) })} />
+                    Coût
+                    <input type="number" name="cout" value={vigneronData.cout} min="0" onChange={e => setVigneronData({ ...vigneronData, cout: parseInt(e.target.value, 10) })} />
+                    <input type="submit" value="Ajouter Vigneron" />
+                </form>
                         <div>
                             <h2>Liste des Vignerons</h2>
                             <input
-                                type="text"
-                                placeholder="Rechercher par nom"
-                                value={searchTerm}
-                                onChange={handleSearchChange}
-                                className="form-control mb-3"
-                            />
+    type="text"
+    placeholder="Rechercher par nom"
+    value={searchTermVignerons}
+    onChange={handleSearchChangeVignerons}
+    className="form-control mb-3"
+/>
                             <ul>
                                 {filteredVignerons.map(vigneron => (
                                     <li key={vigneron.id}>
@@ -289,6 +627,104 @@ function CreationEvennement() {
                                 ))}
                             </ul>
                         </div>
+                        <div>
+                <h2>Prestataires</h2>
+                <form onSubmit={handlePrestataireSubmit}>
+                    Nouveau Prestataire: Nom 
+                    <input type="text" name="name" onChange={handlePrestataireChange} value={prestataireData.name} />
+                    Contact 
+                    <input type="text" name="contact" onChange={handlePrestataireChange} value={prestataireData.contact} />
+                    Prix 
+                    <input type="number" name="prix" onChange={handlePrestataireChange} value={prestataireData.prix} min="0" />
+                    Coût 
+                    <input type="number" name="cout" onChange={handlePrestataireChange} value={prestataireData.cout} min="0" />
+                    <input type="submit" value="Ajouter Prestataire" />
+                </form>
+                <input
+    type="text"
+    placeholder="Rechercher par nom"
+    value={searchTermPrestataires}
+    onChange={handleSearchChangePrestataires}
+    className="form-control mb-3"
+/>                <ul>
+                    {filteredPrestataires.map(prestataire => (
+                        <li key={prestataire.id}>
+                            <input
+                                type="checkbox"
+                                checked={eventPrestataires.includes(prestataire.id)}
+                                onChange={() => handlePrestataireSelect(prestataire.id)}
+                            />
+                            {prestataire.name} - {prestataire.contact} - {prestataire.prix}€ - {prestataire.cout}€
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
+            <div>
+                <h2>Animations</h2>
+                <form onSubmit={handleAnimationSubmit}>
+                    Nouvelle Animation: Nom 
+                    <input type="text" name="name" onChange={handleAnimationChange} value={animationData.name} />
+                    Contact 
+                    <input type="text" name="contact" onChange={handleAnimationChange} value={animationData.contact} />
+                    Prix 
+                    <input type="number" name="prix" onChange={handleAnimationChange} value={animationData.prix} min="0" />
+                    Coût 
+                    <input type="number" name="cout" onChange={handleAnimationChange} value={animationData.cout} min="0" />
+                    <input type="submit" value="Ajouter Animation" />
+                </form>
+                <input
+    type="text"
+    placeholder="Rechercher par nom"
+    value={searchTermAnimations}
+    onChange={handleSearchChangeAnimations}
+    className="form-control mb-3"
+/>                <ul>
+                    {filteredAnimations.map(animation => (
+                        <li key={animation.id}>
+                            <input
+                                type="checkbox"
+                                checked={eventAnimations.includes(animation.id)}
+                                onChange={() => handleAnimationSelect(animation.id)}
+                            />
+                            {animation.name} - {animation.contact} - {animation.prix}€ - {animation.cout}€
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
+            <div>
+                <h2>Sponsors</h2>
+                <form onSubmit={handleSponsorSubmit}>
+                    Nouveau Sponsor: Nom 
+                    <input type="text" name="name" onChange={handleSponsorChange} value={sponsorData.name} />
+                    Contact 
+                    <input type="text" name="contact" onChange={handleSponsorChange} value={sponsorData.contact} />
+                    Prix 
+                    <input type="number" name="prix" onChange={handleSponsorChange} value={sponsorData.prix} min="0" />
+                    Coût 
+                    <input type="number" name="cout" onChange={handleSponsorChange} value={sponsorData.cout} min="0" />
+                    <input type="submit" value="Ajouter Sponsor" />
+                </form>
+                <input
+    type="text"
+    placeholder="Rechercher par nom"
+    value={searchTermSponsors}
+    onChange={handleSearchChangeSponsors}
+    className="form-control mb-3"
+/>                <ul>
+                    {filteredSponsors.map(sponsor => (
+                        <li key={sponsor.id}>
+                            <input
+                                type="checkbox"
+                                checked={eventSponsors.includes(sponsor.id)}
+                                onChange={() => handleSponsorSelect(sponsor.id)}
+                            />
+                            {sponsor.name} - {sponsor.contact} - {sponsor.prix}€ - {sponsor.cout}€
+                        </li>
+                    ))}
+                </ul>
+            </div>
                     </div>
                     
                     <button type="submit">Soumettre</button>

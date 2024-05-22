@@ -5,9 +5,8 @@ const { Evenement } = require('../db/sequelize');
 // Route pour créer un nouvel événement
 router.post('/', async (req, res) => {
     try {
-        const { nom, dateDebut, heureDebut, dateFin, heureFin, lieu, typeLieu, objectifs, questionsInterieur, questionsExterieur, questionsMixte, vignerons, prestataires } = req.body;
+        const { nom, dateDebut, heureDebut, dateFin, heureFin, lieu, typeLieu, objectifs, questionsInterieur, questionsExterieur, questionsMixte, questionsInfrastructures, vignerons, prestataires, materielNecessaire, materielEnStock, materielSurSite } = req.body;
 
-        // Validate required fields
         if (!nom) {
             return res.status(400).json({ error: 'The "nom" field is required.' });
         }
@@ -24,8 +23,12 @@ router.post('/', async (req, res) => {
             questionsInterieur,
             questionsExterieur,
             questionsMixte,
+            questionsInfrastructures,
             vignerons: Array.isArray(vignerons) ? vignerons.join(', ') : vignerons,
-            prestataires: Array.isArray(prestataires) ? prestataires.join(', ') : prestataires
+            prestataires: Array.isArray(prestataires) ? prestataires.join(', ') : prestataires,
+            materielNecessaire,
+            materielEnStock,
+            materielSurSite
         });
 
         res.status(201).json(newEvenement);
@@ -34,7 +37,6 @@ router.post('/', async (req, res) => {
         res.status(500).json({ error: 'An error occurred while creating the evenement.' });
     }
 });
-
 
 // Route pour récupérer tous les événements
 router.get('/', async (req, res) => {
@@ -61,6 +63,4 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-
 module.exports = router;
-

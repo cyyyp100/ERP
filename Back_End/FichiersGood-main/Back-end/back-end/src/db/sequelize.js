@@ -95,7 +95,7 @@ const initDb = () => {
 
         evenements.map(evenement => {
             Evenement.create({
-                nom: evenement.nom,  
+                nom: evenement.nom,
                 dateDebut: evenement.dateDebut,
                 heureDebut: evenement.heureDebut,
                 dateFin: evenement.dateFin,
@@ -106,8 +106,12 @@ const initDb = () => {
                 questionsInterieur: evenement.questionsInterieur,
                 questionsExterieur: evenement.questionsExterieur,
                 questionsMixte: evenement.questionsMixte,
+                questionsInfrastructures: evenement.questionsInfrastructures,
                 vignerons: Array.isArray(evenement.vignerons) ? evenement.vignerons.join(', ') : '',
-                prestataires: Array.isArray(evenement.prestataires) ? evenement.prestataires.join(', ') : ''
+                prestataires: Array.isArray(evenement.prestataires) ? evenement.prestataires.join(', ') : '',
+                materielNecessaire: evenement.materielNecessaire,
+                materielEnStock: evenement.materielEnStock,
+                materielSurSite: evenement.materielSurSite
             }).then(evenement => console.log(evenement.toJSON()));
         });
     });

@@ -54,9 +54,9 @@ function HomePage() {
             <FullCalendar
                 plugins={[dayGridPlugin]}
                 initialView="dayGridMonth"
-                evenements={evenements.map(event => ({
+                events={evenements.map(event => ({
                     id: event.id,
-                    title: event.lieu,
+                    title: event.nom,
                     start: event.dateDebut,
                     end: event.dateFin
                 }))}
@@ -87,7 +87,6 @@ function HomePage() {
         return (
             <div>
                 <Link to={`/event/${eventInfo.event.id}`}>{eventInfo.event.title}</Link>
-                {/* Vous pouvez ajouter plus de détails ici si nécessaire */}
             </div>
         );
     }
