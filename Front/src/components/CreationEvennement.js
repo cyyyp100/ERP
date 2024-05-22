@@ -8,6 +8,12 @@ function CreationEvennement() {
     const [vignerons, setVignerons] = useState([]);
     const [eventVignerons, setEventVignerons] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [electricite, setElectricite] = useState('');
+    const [eau, setEau] = useState('');
+    const [proximiteDirecte, setProximiteDirecte] = useState('');
+
+    const [poubelle, setPoubelle] = useState('');
+    const [toilette, setToilette] = useState('');
     const [vigneronData, setVigneronData] = useState({
         name: '',
         prix: 0,
@@ -83,7 +89,11 @@ function CreationEvennement() {
         objectifs: [],
         questionsInterieur: '',
         questionsExterieur: '',
-        questionsMixte: ''
+        questionsMixte: '',
+        questionsInfrastructures: '',
+        materielNecessaire: [{ nom: '', quantite: 1 }],
+        materielEnStock: [],
+        materielSurSite: []
     });
 
     const handleInputChange = (event) => {
@@ -215,6 +225,52 @@ function CreationEvennement() {
                             <input type="number" id="nombre_entrées_simples" name="nombres d'entrées simples" required /><br /><br />
                             <label htmlFor="Nombre_entrées_principales">Nombre d'entrées principales :</label><br />
                             <input type="number" id="nombre_entrées_principales" name="nombre d'entrées principales" required /><br /><br />
+                            <label>Questions sur les Infrastructures</label>
+                        <label>Electricité :</label><br />
+    <input type="radio" id="oui" name="Electricité" value="Oui" />
+    <label htmlFor="oui">Oui</label><br />
+    <input type="radio" id="non" name="Electricité" value="Non" />
+    <label htmlFor="non">Non</label><br />
+
+
+<label htmlFor="electricite">Electricité :</label><br />
+<input type="radio" id="electricite-oui" name="electricite" value="Oui" onChange={() => setElectricite('Oui')} />
+<label htmlFor="electricite-oui">Oui</label><br />
+<input type="radio" id="electricite-non" name="electricite" value="Non" onChange={() => setElectricite('Non')} />
+<label htmlFor="electricite-non">Non</label><br />
+{electricite === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité de l'électricité.</div>}
+{electricite === 'Oui' && (
+  <div>
+    <label htmlFor="proximiteDirecte">Proximité directe :</label><br />
+    <input type="radio" id="proximiteDirecte-oui" name="proximiteDirecte" value="Oui" onChange={() => setProximiteDirecte('Oui')} />
+    <label htmlFor="proximiteDirecte-oui">Oui</label><br />
+    <input type="radio" id="proximiteDirecte-non" name="proximiteDirecte" value="Non" onChange={() => setProximiteDirecte('Non')} />
+    <label htmlFor="proximiteDirecte-non">Non</label><br />
+    {proximiteDirecte === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité de l'électricité à proximité (Moins de 50 mètres du lieu).</div>}
+
+  </div>
+)}
+
+<label htmlFor="eau">Eau :</label><br />
+<input type="radio" id="eau-oui" name="eau" value="Oui" onChange={() => setEau('Oui')} />
+<label htmlFor="eau-oui">Oui</label><br />
+<input type="radio" id="eau-non" name="eau" value="Non" onChange={() => setEau('Non')} />
+<label htmlFor="eau-non">Non</label><br />
+{eau === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité de l'eau.</div>}
+
+<label htmlFor="poubelle">Poubelle :</label><br />
+<input type="radio" id="poubelle-oui" name="poubelle" value="Oui" onChange={() => setPoubelle('Oui')} />
+<label htmlFor="poubelle-oui">Oui</label><br />
+<input type="radio" id="poubelle-non" name="poubelle" value="Non" onChange={() => setPoubelle('Non')} />
+<label htmlFor="poubelle-non">Non</label><br />
+{poubelle === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité des poubelles.</div>}
+
+<label htmlFor="toilette">Toilette :</label><br />
+<input type="radio" id="toilette-oui" name="toilette" value="Oui" onChange={() => setToilette('Oui')} />
+<label htmlFor="toilette-oui">Oui</label><br />
+<input type="radio" id="toilette-non" name="toilette" value="Non" onChange={() => setToilette('Non')} />
+<label htmlFor="toilette-non">Non</label><br />
+{toilette === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité des toilettes.</div>}
                         </div>
                     )}
 
@@ -243,6 +299,43 @@ function CreationEvennement() {
                                 <h2>Zone de dessin</h2>
                                 <CanvasDraw />
                             </div>
+
+      <label htmlFor="electricite">Electricité :</label><br />
+      <input type="radio" id="electricite-oui" name="electricite" value="Oui" onChange={() => setElectricite('Oui')} />
+      <label htmlFor="electricite-oui">Oui</label><br />
+      <input type="radio" id="electricite-non" name="electricite" value="Non" onChange={() => setElectricite('Non')} />
+      <label htmlFor="electricite-non">Non</label><br />
+      {electricite === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité de l'électricité.</div>}
+      {electricite === 'Oui' && (
+        <div>
+          <label htmlFor="proximiteDirecte">Proximité directe :</label><br />
+          <input type="radio" id="proximiteDirecte-oui" name="proximiteDirecte" value="Oui" onChange={() => setProximiteDirecte('Oui')} />
+          <label htmlFor="proximiteDirecte-oui">Oui</label><br />
+          <input type="radio" id="proximiteDirecte-non" name="proximiteDirecte" value="Non" onChange={() => setProximiteDirecte('Non')} />
+          <label htmlFor="proximiteDirecte-non">Non</label><br />
+        </div>
+      )}
+
+      <label htmlFor="eau">Eau :</label><br />
+      <input type="radio" id="eau-oui" name="eau" value="Oui" onChange={() => setEau('Oui')} />
+      <label htmlFor="eau-oui">Oui</label><br />
+      <input type="radio" id="eau-non" name="eau" value="Non" onChange={() => setEau('Non')} />
+      <label htmlFor="eau-non">Non</label><br />
+      {eau === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité de l'eau.</div>}
+
+      <label htmlFor="poubelle">Poubelle :</label><br />
+      <input type="radio" id="poubelle-oui" name="poubelle" value="Oui" onChange={() => setPoubelle('Oui')} />
+      <label htmlFor="poubelle-oui">Oui</label><br />
+      <input type="radio" id="poubelle-non" name="poubelle" value="Non" onChange={() => setPoubelle('Non')} />
+      <label htmlFor="poubelle-non">Non</label><br />
+      {poubelle === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité des poubelles.</div>}
+
+      <label htmlFor="toilette">Toilette :</label><br />
+      <input type="radio" id="toilette-oui" name="toilette" value="Oui" onChange={() => setToilette('Oui')} />
+      <label htmlFor="toilette-oui">Oui</label><br />
+      <input type="radio" id="toilette-non" name="toilette" value="Non" onChange={() => setToilette('Non')} />
+      <label htmlFor="toilette-non">Non</label><br />
+      {toilette === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité des toilettes.</div>}
                         </div>
                     )}
                     
@@ -250,6 +343,43 @@ function CreationEvennement() {
                         <div className="mb-3">
                             <label>Questions pour Intérieur et Extérieur</label>
                             <input type="text" name="questionsMixte" onChange={handleInputChange} value={formData.questionsMixte} className="form-control" placeholder="Question pour les espaces mixtes?" />
+
+<label htmlFor="electricite">Electricité :</label><br />
+<input type="radio" id="electricite-oui" name="electricite" value="Oui" onChange={() => setElectricite('Oui')} />
+<label htmlFor="electricite-oui">Oui</label><br />
+<input type="radio" id="electricite-non" name="electricite" value="Non" onChange={() => setElectricite('Non')} />
+<label htmlFor="electricite-non">Non</label><br />
+{electricite === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité de l'électricité.</div>}
+{electricite === 'Oui' && (
+  <div>
+    <label htmlFor="proximiteDirecte">Proximité directe :</label><br />
+    <input type="radio" id="proximiteDirecte-oui" name="proximiteDirecte" value="Oui" onChange={() => setProximiteDirecte('Oui')} />
+    <label htmlFor="proximiteDirecte-oui">Oui</label><br />
+    <input type="radio" id="proximiteDirecte-non" name="proximiteDirecte" value="Non" onChange={() => setProximiteDirecte('Non')} />
+    <label htmlFor="proximiteDirecte-non">Non</label><br />
+  </div>
+)}
+
+<label htmlFor="eau">Eau :</label><br />
+<input type="radio" id="eau-oui" name="eau" value="Oui" onChange={() => setEau('Oui')} />
+<label htmlFor="eau-oui">Oui</label><br />
+<input type="radio" id="eau-non" name="eau" value="Non" onChange={() => setEau('Non')} />
+<label htmlFor="eau-non">Non</label><br />
+{eau === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité de l'eau.</div>}
+
+<label htmlFor="poubelle">Poubelle :</label><br />
+<input type="radio" id="poubelle-oui" name="poubelle" value="Oui" onChange={() => setPoubelle('Oui')} />
+<label htmlFor="poubelle-oui">Oui</label><br />
+<input type="radio" id="poubelle-non" name="poubelle" value="Non" onChange={() => setPoubelle('Non')} />
+<label htmlFor="poubelle-non">Non</label><br />
+{poubelle === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité des poubelles.</div>}
+
+<label htmlFor="toilette">Toilette :</label><br />
+<input type="radio" id="toilette-oui" name="toilette" value="Oui" onChange={() => setToilette('Oui')} />
+<label htmlFor="toilette-oui">Oui</label><br />
+<input type="radio" id="toilette-non" name="toilette" value="Non" onChange={() => setToilette('Non')} />
+<label htmlFor="toilette-non">Non</label><br />
+{toilette === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité des toilettes.</div>}
                         </div>
                     )}
 
