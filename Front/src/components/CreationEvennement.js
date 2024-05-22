@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './bootstrap.css'; 
 import CheckboxGroup from '../helpers/CheckboxGroup';
 import RangeSelector from '../helpers/RangeSelector';
@@ -10,7 +10,11 @@ function CreationEvennement() {
     const [animations, setAnimations] = useState([]);
     const [sponsors, setSponsors] = useState([]);
     const [eventVignerons, setEventVignerons] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
+    const [searchTermVignerons, setSearchTermVignerons] = useState('');
+    const [searchTermPrestataires, setSearchTermPrestataires] = useState('');
+    const [searchTermAnimations, setSearchTermAnimations] = useState('');
+    const [searchTermSponsors, setSearchTermSponsors] = useState('');
+
     const [electricite, setElectricite] = useState('');
     const [eau, setEau] = useState('');
     const [proximiteDirecte, setProximiteDirecte] = useState('');
@@ -31,6 +35,7 @@ function CreationEvennement() {
     const [eventPrestataires, setEventPrestataires] = useState([]);
     const [eventAnimations, setEventAnimations] = useState([]);
     const [eventSponsors, setEventSponsors] = useState([]);
+
     const handleVigneronChange = (event) => {
         const { name, value } = event.target;
         setVigneronData(prevState => ({
@@ -42,22 +47,28 @@ function CreationEvennement() {
     const handleVigneronSubmit = async (event) => {
         event.preventDefault();
         const { name, prix, cout, contact } = vigneronData;
-    
-        fetch('http://localhost:3001/api/vignerons', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, prix, cout, contact })
-        })
-        .then(() => {
-            fetchVignerons(); // Refresh list after adding new vigneron
-            setVigneronData({ name: '', prix: 0, cout: 0, contact: '' }); // Reset form fields
-            alert('Vigneron ajouté avec succès!');
-        })
-        .catch(error => console.error('Erreur lors de l\'ajout du vigneron:', error));
+
+        try {
+            const response = await fetch('http://localhost:3001/api/vignerons', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, prix, cout, contact })
+            });
+
+            if (response.ok) {
+                const newVigneron = await response.json();
+                setVignerons(prevVignerons => [...prevVignerons, newVigneron]);
+                setVigneronData({ name: '', prix: 0, cout: 0, contact: '' });
+                alert('Vigneron ajouté avec succès!');
+            }
+        } catch (error) {
+            console.error('Erreur lors de l\'ajout du vigneron:', error);
+        }
     };
     
+    
     // Fetch function to refresh the vignerons list
-    const fetchVignerons = async () => {
+    const fetchVignerons = useCallback(async () => {
         try {
             const response = await fetch('http://localhost:3001/api/vignerons');
             const data = await response.json();
@@ -65,10 +76,10 @@ function CreationEvennement() {
         } catch (error) {
             console.error('Erreur lors de la récupération des vignerons:', error);
         }
-    };
+    }, []);
     
 
-    const fetchPrestataires = async () => {
+    const fetchPrestataires = useCallback(async () => {
         try {
             const response = await fetch('http://localhost:3001/api/prestataires');
             const data = await response.json();
@@ -76,9 +87,9 @@ function CreationEvennement() {
         } catch (error) {
             console.error('Erreur lors de la récupération des prestataires:', error);
         }
-    };
-    
-    const fetchAnimations = async () => {
+    }, []);
+
+    const fetchAnimations = useCallback(async () => {
         try {
             const response = await fetch('http://localhost:3001/api/animations');
             const data = await response.json();
@@ -86,9 +97,9 @@ function CreationEvennement() {
         } catch (error) {
             console.error('Erreur lors de la récupération des animations:', error);
         }
-    };
-    
-    const fetchSponsors = async () => {
+    }, []);
+
+    const fetchSponsors = useCallback(async () => {
         try {
             const response = await fetch('http://localhost:3001/api/sponsors');
             const data = await response.json();
@@ -96,7 +107,7 @@ function CreationEvennement() {
         } catch (error) {
             console.error('Erreur lors de la récupération des sponsors:', error);
         }
-    };
+    }, []);
     
     // const fetchMateriels = async () => {
     //     try {
@@ -114,7 +125,7 @@ function CreationEvennement() {
         fetchPrestataires();
         fetchAnimations();
         fetchSponsors();
-    }, []);
+    }, [fetchVignerons, fetchPrestataires, fetchAnimations, fetchSponsors]);
 
     const handleVigneronSelect = (vigneronId) => {
         setEventVignerons(prevState => {
@@ -126,13 +137,39 @@ function CreationEvennement() {
         });
     };
 
-    const handleSearchChange = (event) => {
-        setSearchTerm(event.target.value);
+    const handleSearchChangeVignerons = (event) => {
+        setSearchTermVignerons(event.target.value);
     };
+    
+    const handleSearchChangePrestataires = (event) => {
+        setSearchTermPrestataires(event.target.value);
+    };
+    
+    const handleSearchChangeAnimations = (event) => {
+        setSearchTermAnimations(event.target.value);
+    };
+    
+    const handleSearchChangeSponsors = (event) => {
+        setSearchTermSponsors(event.target.value);
+    };
+    
 
-    const filteredVignerons = vignerons.filter(vigneron => 
-        vigneron.name.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredVignerons = vignerons.filter(vigneron =>
+        vigneron.name.toLowerCase().includes(searchTermVignerons.toLowerCase())
     );
+    
+    const filteredPrestataires = prestataires.filter(prestataire =>
+        prestataire.name.toLowerCase().includes(searchTermPrestataires.toLowerCase())
+    );
+    
+    const filteredAnimations = animations.filter(animation =>
+        animation.name.toLowerCase().includes(searchTermAnimations.toLowerCase())
+    );
+    
+    const filteredSponsors = sponsors.filter(sponsor =>
+        sponsor.name.toLowerCase().includes(searchTermSponsors.toLowerCase())
+    );
+    
 
     const handlePrestataireChange = (event) => {
         const { name, value } = event.target;
@@ -148,7 +185,8 @@ function CreationEvennement() {
     
         fetch('http://localhost:3001/api/prestataires', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache' },
             body: JSON.stringify({ name, prix, cout, contact })
         })
         .then(() => {
@@ -170,18 +208,23 @@ function CreationEvennement() {
     const handleAnimationSubmit = async (event) => {
         event.preventDefault();
         const { name, prix, cout, contact } = animationData;
-    
-        fetch('http://localhost:3001/api/animations', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, prix, cout, contact })
-        })
-        .then(() => {
-            fetchAnimations(); // Refresh list after adding new animation
-            setAnimationData({ name: '', prix: 0, cout: 0, contact: '' }); // Reset form fields
-            alert('Animation ajoutée avec succès!');
-        })
-        .catch(error => console.error('Erreur lors de l\'ajout de l\'animation:', error));
+
+        try {
+            const response = await fetch('http://localhost:3001/api/animations', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, prix, cout, contact })
+            });
+
+            if (response.ok) {
+                const newAnimation = await response.json();
+                setAnimations(prevAnimations => [...prevAnimations, newAnimation]);
+                setAnimationData({ name: '', prix: 0, cout: 0, contact: '' });
+                alert('Animation ajoutée avec succès!');
+            }
+        } catch (error) {
+            console.error('Erreur lors de l ajout de l animation:', error);
+        }
     };
 
     const handleSponsorChange = (event) => {
@@ -195,18 +238,23 @@ function CreationEvennement() {
     const handleSponsorSubmit = async (event) => {
         event.preventDefault();
         const { name, prix, cout, contact } = sponsorData;
-    
-        fetch('http://localhost:3001/api/sponsors', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, prix, cout, contact })
-        })
-        .then(() => {
-            fetchSponsors(); // Refresh list after adding new sponsor
-            setSponsorData({ name: '', prix: 0, cout: 0, contact: '' }); // Reset form fields
-            alert('Sponsor ajouté avec succès!');
-        })
-        .catch(error => console.error('Erreur lors de l\'ajout du sponsor:', error));
+
+        try {
+            const response = await fetch('http://localhost:3001/api/sponsors', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, prix, cout, contact })
+            });
+
+            if (response.ok) {
+                const newSponsor = await response.json();
+                setSponsors(prevSponsors => [...prevSponsors, newSponsor]);
+                setSponsorData({ name: '', prix: 0, cout: 0, contact: '' });
+                alert('Sponsor ajouté avec succès!');
+            }
+        } catch (error) {
+            console.error('Erreur lors de l ajout du sponsor:', error);
+        }
     };
 
     const handlePrestataireSelect = (prestataireId) => {
@@ -238,16 +286,6 @@ function CreationEvennement() {
             }
         });
     };
-
-    const filteredPrestataires = prestataires.filter(prestataire => 
-        prestataire.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    const filteredAnimations = animations.filter(animation => 
-        animation.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    const filteredSponsors = sponsors.filter(sponsor => 
-        sponsor.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
 
     const [formData, setFormData] = useState({
         nom: '',
@@ -556,27 +594,26 @@ function CreationEvennement() {
 
                     <div className="container mt-4">
                         <h1>Organisation personnel</h1>
-                        <div>Vigneron</div>
                         <form onSubmit={handleVigneronSubmit}>
-                            Nouveau Vigneron: Nom 
-                            <input type="text" name="name" onChange={handleVigneronChange} value={vigneronData.name} />
-                            Contact 
-                            <input type="text" name="contact" onChange={handleVigneronChange} value={vigneronData.contact} />
-                            Prix 
-                            <input type="number" name="prix" onChange={handleVigneronChange} value={vigneronData.prix} min="0" />
-                            Coût 
-                            <input type="number" name="cout" onChange={handleVigneronChange} value={vigneronData.cout} min="0" />
-                            <input type="submit" value="Ajouter Vigneron" />
-                        </form>
+                    Nouveau Vigneron: Nom
+                    <input type="text" name="name" value={vigneronData.name} onChange={e => setVigneronData({ ...vigneronData, name: e.target.value })} />
+                    Contact
+                    <input type="text" name="contact" value={vigneronData.contact} onChange={e => setVigneronData({ ...vigneronData, contact: e.target.value })} />
+                    Prix
+                    <input type="number" name="prix" value={vigneronData.prix} min="0" onChange={e => setVigneronData({ ...vigneronData, prix: parseInt(e.target.value, 10) })} />
+                    Coût
+                    <input type="number" name="cout" value={vigneronData.cout} min="0" onChange={e => setVigneronData({ ...vigneronData, cout: parseInt(e.target.value, 10) })} />
+                    <input type="submit" value="Ajouter Vigneron" />
+                </form>
                         <div>
                             <h2>Liste des Vignerons</h2>
                             <input
-                                type="text"
-                                placeholder="Rechercher par nom"
-                                value={searchTerm}
-                                onChange={handleSearchChange}
-                                className="form-control mb-3"
-                            />
+    type="text"
+    placeholder="Rechercher par nom"
+    value={searchTermVignerons}
+    onChange={handleSearchChangeVignerons}
+    className="form-control mb-3"
+/>
                             <ul>
                                 {filteredVignerons.map(vigneron => (
                                     <li key={vigneron.id}>
@@ -603,8 +640,13 @@ function CreationEvennement() {
                     <input type="number" name="cout" onChange={handlePrestataireChange} value={prestataireData.cout} min="0" />
                     <input type="submit" value="Ajouter Prestataire" />
                 </form>
-                <input type="text" placeholder="Rechercher par nom" value={searchTerm} onChange={handleSearchChange} />
-                <ul>
+                <input
+    type="text"
+    placeholder="Rechercher par nom"
+    value={searchTermPrestataires}
+    onChange={handleSearchChangePrestataires}
+    className="form-control mb-3"
+/>                <ul>
                     {filteredPrestataires.map(prestataire => (
                         <li key={prestataire.id}>
                             <input
@@ -631,8 +673,13 @@ function CreationEvennement() {
                     <input type="number" name="cout" onChange={handleAnimationChange} value={animationData.cout} min="0" />
                     <input type="submit" value="Ajouter Animation" />
                 </form>
-                <input type="text" placeholder="Rechercher par nom" value={searchTerm} onChange={handleSearchChange} />
-                <ul>
+                <input
+    type="text"
+    placeholder="Rechercher par nom"
+    value={searchTermAnimations}
+    onChange={handleSearchChangeAnimations}
+    className="form-control mb-3"
+/>                <ul>
                     {filteredAnimations.map(animation => (
                         <li key={animation.id}>
                             <input
@@ -659,8 +706,13 @@ function CreationEvennement() {
                     <input type="number" name="cout" onChange={handleSponsorChange} value={sponsorData.cout} min="0" />
                     <input type="submit" value="Ajouter Sponsor" />
                 </form>
-                <input type="text" placeholder="Rechercher par nom" value={searchTerm} onChange={handleSearchChange} />
-                <ul>
+                <input
+    type="text"
+    placeholder="Rechercher par nom"
+    value={searchTermSponsors}
+    onChange={handleSearchChangeSponsors}
+    className="form-control mb-3"
+/>                <ul>
                     {filteredSponsors.map(sponsor => (
                         <li key={sponsor.id}>
                             <input
