@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './bootstrap.css'; 
 import CheckboxGroup from '../helpers/CheckboxGroup';
 import RangeSelector from '../helpers/RangeSelector';
@@ -20,6 +20,10 @@ function CreationEvennement() {
     const [proximiteDirecte, setProximiteDirecte] = useState('');
     const [poubelle, setPoubelle] = useState('');
     const [toilette, setToilette] = useState('');
+    const [navette, setNavette] = useState('');
+
+    const orgPersonnelRef = useRef(null);
+
 
 
     const [vigneronData, setVigneronData] = useState({
@@ -125,6 +129,27 @@ function CreationEvennement() {
         fetchPrestataires();
         fetchAnimations();
         fetchSponsors();
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    alert('Vous êtes arrivé à la section Organisation personnel. Veuillez vous assurer que les contrats soient signés avec les personnes extérieures');
+                }
+            });
+        }, {
+            rootMargin: '0px',
+            threshold: 1.0  // Ajustez selon les besoins pour déclencher l'alerte plus tôt ou plus tard
+        });
+
+        // Attachement de l'observer à la référence
+        if (orgPersonnelRef.current) {
+            observer.observe(orgPersonnelRef.current);
+        }
+
+        // Nettoyage de l'observer lors du démontage du composant
+        return () => {
+            observer.disconnect();
+        };
     }, [fetchVignerons, fetchPrestataires, fetchAnimations, fetchSponsors]);
 
     const handleVigneronSelect = (vigneronId) => {
@@ -384,6 +409,10 @@ function CreationEvennement() {
                         <input type="text" name="lieu" onChange={handleInputChange} value={formData.lieu} className="form-control" placeholder="Entrez le lieu" />
                     </div>
                     <div className="mb-3">
+                    <label htmlFor="description">Description de l'événement</label>
+                    <textarea id="description" name="description" value={formData.description} onChange={handleInputChange} className="form-control" />
+                </div>
+                    <div className="mb-3">
                         <label>Objectifs de l'événement</label>
                         <div>
                             <input type="checkbox" id="Festif" name="objectifs" value="Festif" onChange={handleInputChange} checked={formData.objectifs.includes('Festif')} />
@@ -434,6 +463,60 @@ function CreationEvennement() {
                             <input type="number" id="nombre_entrées_simples" name="nombres d'entrées simples" required /><br /><br />
                             <label htmlFor="Nombre_entrées_principales">Nombre d'entrées principales :</label><br />
                             <input type="number" id="nombre_entrées_principales" name="nombre d'entrées principales" required /><br /><br />
+
+                            {/* Forme */}
+                <div className="mb-3">
+                    <label>Forme</label>
+                    {['Circulaire', 'Rectangulaire', 'Linéaire', 'Autre'].map(shape => (
+                        <div key={shape}>
+                            <input type="radio" id={shape} name="forme" value={shape} checked={formData.forme === shape} onChange={handleInputChange} />
+                            <label htmlFor={shape}>{shape}</label>
+                        </div>
+                    ))}
+                    <div className="mt-4">
+                                <h2>Zone de dessin</h2>
+                                <CanvasDraw />
+                            </div>
+                </div>
+
+                {/* Chauffage */}
+                <div className="mb-3">
+                    <label>Chauffage</label>
+                    <input type="radio" id="chauffageOui" name="chauffage" value="Oui" checked={formData.chauffage === 'Oui'} onChange={handleInputChange} />
+                    <label htmlFor="chauffageOui">Oui</label>
+                    <input type="radio" id="chauffageNon" name="chauffage" value="Non" checked={formData.chauffage === 'Non'} onChange={handleInputChange} />
+                    <label htmlFor="chauffageNon">Non</label>
+                </div>
+
+                {/* Coin Fumeur */}
+                <div className="mb-3">
+                    <label>Coin Fumeur</label>
+                    <input type="radio" id="coinFumeurOui" name="coinFumeur" value="Oui" checked={formData.coinFumeur === 'Oui'} onChange={handleInputChange} />
+                    <label htmlFor="coinFumeurOui">Oui</label>
+                    <input type="radio" id="coinFumeurNon" name="coinFumeur" value="Non" checked={formData.coinFumeur === 'Non'} onChange={handleInputChange} />
+                    <label htmlFor="coinFumeurNon">Non</label>
+                </div>
+
+                {/* Coin traiteur */}
+                <div className="mb-3">
+                    <label>Coin Traiteur</label>
+                    <input type="radio" id="coinTraiteurOui" name="coinTraiteur" value="Oui" checked={formData.coinTraiteur === 'Oui'} onChange={handleInputChange} />
+                    <label htmlFor="coinTraiteurOui">Oui</label>
+                    <input type="radio" id="coinTraiteurNon" name="coinTraiteur" value="Non" checked={formData.coinTraiteur === 'Non'} onChange={handleInputChange} />
+                    <label htmlFor="coinTraiteurNon">Non</label>
+                </div>
+
+                {/* Bâtiment ERP */}
+                <div className="mb-3">
+                    <label>Bâtiment ERP</label>
+                    <input type="radio" id="batimentERPOui" name="batimentERP" value="Oui" checked={formData.batimentERP === 'Oui'} onChange={handleInputChange} />
+                    <label htmlFor="batimentERPOui">Oui</label>
+                    <input type="radio" id="batimentERPNon" name="batimentERP" value="Non" checked={formData.batimentERP === 'Non'} onChange={handleInputChange} />
+                    <label htmlFor="batimentERPNon">Non</label>
+                </div>
+
+
+
                             <label>Questions sur les Infrastructures</label>
                         <label>Electricité :</label><br />
     <input type="radio" id="oui" name="Electricité" value="Oui" />
@@ -491,11 +574,6 @@ function CreationEvennement() {
                             <label htmlFor="oui">Oui</label><br />
                             <input type="radio" id="non" name="besoinSignalétique" value="Non" />
                             <label htmlFor="non">Non</label><br />
-                            <label htmlFor="Parking">Parking :</label><br />
-                            <input type="radio" id="oui" name="Parking" value="Oui" />
-                            <label htmlFor="oui">Oui</label><br />
-                            <input type="radio" id="non" name="Parking" value="Non" />
-                            <label htmlFor="non">Non</label><br />
                             <label htmlFor="Abris">Abris :</label><br />
                             <input type="radio" id="vent" name="Abris" value="Oui" />
                             <label htmlFor="vent">Vent</label><br />
@@ -503,11 +581,68 @@ function CreationEvennement() {
                             <label htmlFor="pluie">Pluie</label><br />
                             <input type="radio" id="non" name="Abris" value="Non" />
                             <label htmlFor="non">Non</label><br />  
-                            <div>Forme</div>
-                            <div className="mt-4">
+                            
+                            {/* Type de sol */}
+                <div className="mb-3">
+                    <label>Type de sol</label>
+                    {['Sable', 'Gravier', 'Boueux', 'Goudron', 'Pavés', 'Herbe'].map(sol => (
+                        <div key={sol}>
+                            <input type="radio" id={sol} name="typeDeSol" value={sol} checked={formData.typeDeSol === sol} onChange={handleInputChange} />
+                            <label htmlFor={sol}>{sol}</label>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Nombre d'entrées */}
+                <div className="mb-3">
+                    <label htmlFor="nombreEntrees">Nombre d’entrées</label>
+                    <input type="number" id="nombreEntrees" name="nombreEntrees" value={formData.nombreEntrees} onChange={handleInputChange} className="form-control" />
+                </div>
+
+                {/* Nombre d'entrées principales */}
+                <div className="mb-3">
+                    <label htmlFor="nombreEntreesPrincipales">Nombre d’entrées principales</label>
+                    <input type="number" id="nombreEntreesPrincipales" name="nombreEntreesPrincipales" value={formData.nombreEntreesPrincipales} onChange={handleInputChange} className="form-control" />
+                </div>
+
+                {/* Superficie */}
+                <div className="mb-3">
+                    <label htmlFor="superficie">Superficie (m²)</label>
+                    <input type="number" id="superficie" name="superficie" value={formData.superficie} onChange={handleInputChange} className="form-control" />
+                </div>
+
+                {/* Forme */}
+                <div className="mb-3">
+                    <label>Forme</label>
+                    {['Circulaire', 'Rectangulaire', 'Linéaire', 'Autre'].map(forme => (
+                        <div key={forme}>
+                            <input type="radio" id={forme} name="forme" value={forme} checked={formData.forme === forme} onChange={handleInputChange} />
+                            <label htmlFor={forme}>{forme}</label>
+                        </div>
+                    ))}
+                    <div className="mt-4">
                                 <h2>Zone de dessin</h2>
                                 <CanvasDraw />
                             </div>
+                </div>
+
+                {/* Abris */}
+                <div className="mb-3">
+                    <label>Abris</label>
+                    <input type="radio" id="abrisOui" name="abris" value="Oui" checked={formData.abris === 'Oui'} onChange={handleInputChange} />
+                    <label htmlFor="abrisOui">Oui</label>
+                    <input type="radio" id="abrisNon" name="abris" value="Non" checked={formData.abris === 'Non'} onChange={handleInputChange} />
+                    <label htmlFor="abrisNon">Non</label>
+                </div>
+
+                {/* Végétation/zone protégée */}
+                <div className="mb-3">
+                    <label>Végétation/zone protégée</label>
+                    <input type="radio" id="vegetationOui" name="vegetation" value="Oui" checked={formData.vegetation === 'Oui'} onChange={handleInputChange} />
+                    <label htmlFor="vegetationOui">Oui</label>
+                    <input type="radio" id="vegetationNon" name="vegetation" value="Non" checked={formData.vegetation === 'Non'} onChange={handleInputChange} />
+                    <label htmlFor="vegetationNon">Non</label>
+                </div>
 
       <label htmlFor="electricite">Electricité :</label><br />
       <input type="radio" id="electricite-oui" name="electricite" value="Oui" onChange={() => setElectricite('Oui')} />
@@ -550,9 +685,145 @@ function CreationEvennement() {
                     
                     {formData.typeLieu === 'Interieur et Exterieur' && (
                         <div className="mb-3">
-                            <label>Questions pour Intérieur et Extérieur</label>
-                            <input type="text" name="questionsMixte" onChange={handleInputChange} value={formData.questionsMixte} className="form-control" placeholder="Question pour les espaces mixtes?" />
+<label>Questions pour Intérieur</label>
+                            <label htmlFor="besoinSignalétique">Besoin de signalétique :</label><br />
+                            <input type="radio" id="oui" name="besoinSignalétique" value="Oui" />
+                            <label htmlFor="oui">Oui</label><br />
+                            <input type="radio" id="non" name="besoinSignalétique" value="Non" />
+                            <label htmlFor="non">Non</label><br />
+                            <label htmlFor="superficie">Superficie (en m²) :</label><br />
+                            <input type="number" id="superficie" name="superficie" required /><br /><br />
+                            <label htmlFor="Nombre_entrées_simples">Nombres d'entrées simples :</label><br />
+                            <input type="number" id="nombre_entrées_simples" name="nombres d'entrées simples" required /><br /><br />
+                            <label htmlFor="Nombre_entrées_principales">Nombre d'entrées principales :</label><br />
+                            <input type="number" id="nombre_entrées_principales" name="nombre d'entrées principales" required /><br /><br />
 
+                            {/* Forme */}
+                <div className="mb-3">
+                    <label>Forme</label>
+                    {['Circulaire', 'Rectangulaire', 'Linéaire', 'Autre'].map(shape => (
+                        <div key={shape}>
+                            <input type="radio" id={shape} name="forme" value={shape} checked={formData.forme === shape} onChange={handleInputChange} />
+                            <label htmlFor={shape}>{shape}</label>
+                        </div>
+                    ))}
+                    <div className="mt-4">
+                                <h2>Zone de dessin</h2>
+                                <CanvasDraw />
+                            </div>
+                </div>
+
+                {/* Chauffage */}
+                <div className="mb-3">
+                    <label>Chauffage</label>
+                    <input type="radio" id="chauffageOui" name="chauffage" value="Oui" checked={formData.chauffage === 'Oui'} onChange={handleInputChange} />
+                    <label htmlFor="chauffageOui">Oui</label>
+                    <input type="radio" id="chauffageNon" name="chauffage" value="Non" checked={formData.chauffage === 'Non'} onChange={handleInputChange} />
+                    <label htmlFor="chauffageNon">Non</label>
+                </div>
+
+                {/* Coin Fumeur */}
+                <div className="mb-3">
+                    <label>Coin Fumeur</label>
+                    <input type="radio" id="coinFumeurOui" name="coinFumeur" value="Oui" checked={formData.coinFumeur === 'Oui'} onChange={handleInputChange} />
+                    <label htmlFor="coinFumeurOui">Oui</label>
+                    <input type="radio" id="coinFumeurNon" name="coinFumeur" value="Non" checked={formData.coinFumeur === 'Non'} onChange={handleInputChange} />
+                    <label htmlFor="coinFumeurNon">Non</label>
+                </div>
+
+                {/* Coin traiteur */}
+                <div className="mb-3">
+                    <label>Coin Traiteur</label>
+                    <input type="radio" id="coinTraiteurOui" name="coinTraiteur" value="Oui" checked={formData.coinTraiteur === 'Oui'} onChange={handleInputChange} />
+                    <label htmlFor="coinTraiteurOui">Oui</label>
+                    <input type="radio" id="coinTraiteurNon" name="coinTraiteur" value="Non" checked={formData.coinTraiteur === 'Non'} onChange={handleInputChange} />
+                    <label htmlFor="coinTraiteurNon">Non</label>
+                </div>
+
+                {/* Bâtiment ERP */}
+                <div className="mb-3">
+                    <label>Bâtiment ERP</label>
+                    <input type="radio" id="batimentERPOui" name="batimentERP" value="Oui" checked={formData.batimentERP === 'Oui'} onChange={handleInputChange} />
+                    <label htmlFor="batimentERPOui">Oui</label>
+                    <input type="radio" id="batimentERPNon" name="batimentERP" value="Non" checked={formData.batimentERP === 'Non'} onChange={handleInputChange} />
+                    <label htmlFor="batimentERPNon">Non</label>
+                </div>
+                            
+<label>Questions pour Extérieur</label>
+                            <label htmlFor="besoinSignalétique">Besoin de signalétique :</label><br />
+                            <input type="radio" id="oui" name="besoinSignalétique" value="Oui" />
+                            <label htmlFor="oui">Oui</label><br />
+                            <input type="radio" id="non" name="besoinSignalétique" value="Non" />
+                            <label htmlFor="non">Non</label><br />
+                            <label htmlFor="Abris">Abris :</label><br />
+                            <input type="radio" id="vent" name="Abris" value="Oui" />
+                            <label htmlFor="vent">Vent</label><br />
+                            <input type="radio" id="pluie" name="Abris" value="Non" />
+                            <label htmlFor="pluie">Pluie</label><br />
+                            <input type="radio" id="non" name="Abris" value="Non" />
+                            <label htmlFor="non">Non</label><br />  
+                            
+                            {/* Type de sol */}
+                <div className="mb-3">
+                    <label>Type de sol</label>
+                    {['Sable', 'Gravier', 'Boueux', 'Goudron', 'Pavés', 'Herbe'].map(sol => (
+                        <div key={sol}>
+                            <input type="radio" id={sol} name="typeDeSol" value={sol} checked={formData.typeDeSol === sol} onChange={handleInputChange} />
+                            <label htmlFor={sol}>{sol}</label>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Nombre d'entrées */}
+                <div className="mb-3">
+                    <label htmlFor="nombreEntrees">Nombre d’entrées</label>
+                    <input type="number" id="nombreEntrees" name="nombreEntrees" value={formData.nombreEntrees} onChange={handleInputChange} className="form-control" />
+                </div>
+
+                {/* Nombre d'entrées principales */}
+                <div className="mb-3">
+                    <label htmlFor="nombreEntreesPrincipales">Nombre d’entrées principales</label>
+                    <input type="number" id="nombreEntreesPrincipales" name="nombreEntreesPrincipales" value={formData.nombreEntreesPrincipales} onChange={handleInputChange} className="form-control" />
+                </div>
+
+                {/* Superficie */}
+                <div className="mb-3">
+                    <label htmlFor="superficie">Superficie (m²)</label>
+                    <input type="number" id="superficie" name="superficie" value={formData.superficie} onChange={handleInputChange} className="form-control" />
+                </div>
+
+                {/* Forme */}
+                <div className="mb-3">
+                    <label>Forme</label>
+                    {['Circulaire', 'Rectangulaire', 'Linéaire', 'Autre'].map(forme => (
+                        <div key={forme}>
+                            <input type="radio" id={forme} name="forme" value={forme} checked={formData.forme === forme} onChange={handleInputChange} />
+                            <label htmlFor={forme}>{forme}</label>
+                        </div>
+                    ))}
+                    <div className="mt-4">
+                                <h2>Zone de dessin</h2>
+                                <CanvasDraw />
+                            </div>
+                </div>
+
+                {/* Abris */}
+                <div className="mb-3">
+                    <label>Abris</label>
+                    <input type="radio" id="abrisOui" name="abris" value="Oui" checked={formData.abris === 'Oui'} onChange={handleInputChange} />
+                    <label htmlFor="abrisOui">Oui</label>
+                    <input type="radio" id="abrisNon" name="abris" value="Non" checked={formData.abris === 'Non'} onChange={handleInputChange} />
+                    <label htmlFor="abrisNon">Non</label>
+                </div>
+
+                {/* Végétation/zone protégée */}
+                <div className="mb-3">
+                    <label>Végétation/zone protégée</label>
+                    <input type="radio" id="vegetationOui" name="vegetation" value="Oui" checked={formData.vegetation === 'Oui'} onChange={handleInputChange} />
+                    <label htmlFor="vegetationOui">Oui</label>
+                    <input type="radio" id="vegetationNon" name="vegetation" value="Non" checked={formData.vegetation === 'Non'} onChange={handleInputChange} />
+                    <label htmlFor="vegetationNon">Non</label>
+                </div>
 <label htmlFor="electricite">Electricité :</label><br />
 <input type="radio" id="electricite-oui" name="electricite" value="Oui" onChange={() => setElectricite('Oui')} />
 <label htmlFor="electricite-oui">Oui</label><br />
@@ -589,12 +860,70 @@ function CreationEvennement() {
 <input type="radio" id="toilette-non" name="toilette" value="Non" onChange={() => setToilette('Non')} />
 <label htmlFor="toilette-non">Non</label><br />
 {toilette === 'Non' && <div className="alert alert-warning">Veuillez vérifier la disponibilité des toilettes.</div>}
+
+
+
+
                         </div>
+
+
                     )}
 
-                    <div className="container mt-4">
+<div className="mb-3">
+                    <label htmlFor="parking">Parking disponible ?</label>
+                    <select id="parking" name="parking" value={formData.parking} onChange={handleInputChange} className="form-control">
+                        <option value="">Sélectionner</option>
+                        <option value="oui">Oui</option>
+                        <option value="non">Non</option>
+                    </select>
+                </div>
+
+                {formData.parking === "oui" && (
+                    <>
+                        <div className="mb-3">
+                            <label htmlFor="superficie">Superficie du parking (en m²)</label>
+                            <input type="number" id="superficie" name="superficie" value={formData.superficie} onChange={handleInputChange} className="form-control" />
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="nombreEntrees">Nombre d’entrées du parking</label>
+                            <input type="number" id="nombreEntrees" name="nombreEntrees" value={formData.nombreEntrees} onChange={handleInputChange} className="form-control" />
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="nombreEntreesPrincipales">Nombre d’entrées principales du parking</label>
+                            <input type="number" id="nombreEntreesPrincipales" name="nombreEntreesPrincipales" value={formData.nombreEntreesPrincipales} onChange={handleInputChange} className="form-control" />
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="distanceParking">Distance du parking au lieu de l’événement (en mètres)</label>
+                            <input type="number" id="distanceParking" name="distanceParking" value={formData.distanceParking} onChange={handleInputChange} className="form-control" />
+                        </div>
+                        <label htmlFor="navette">Navette :</label><br />
+<input type="radio" id="navette-oui" name="Navette" value="Oui" onChange={() => setNavette('Oui')} />
+<label htmlFor="navette-oui">Oui</label><br />
+<input type="radio" id="vavette-non" name="Navette" value="Non" onChange={() => setNavette('Non')} />
+<label htmlFor="navette-non">Non</label><br />
+
+                        <div className="container mt-4">
+                        <CheckboxGroup title="Moyens de trasmports desservissant la zone" checkboxes={[
+                            { id: 'Tramway', label: 'Tramway' },
+                            { id: ' Bus', label: 'Bus' },
+                            { id: 'Taxis', label: 'Taxis' }
+                        ]} />
+                        </div>
+
+                       
+                    </>
+                )}
+
+                {formData.parking === "non" && (
+                    <div className="alert alert-warning">
+                        Aucun parking n'est disponible. Veuillez trouver un parking à proximité pour les participants.
+                    </div>
+                )}
+
+                    <div className="container mt-4" >
                         <h1>Organisation personnel</h1>
-                        <form onSubmit={handleVigneronSubmit}>
+                        
+                        {/* <form onSubmit={handleVigneronSubmit}>
                     Nouveau Vigneron: Nom
                     <input type="text" name="name" value={vigneronData.name} onChange={e => setVigneronData({ ...vigneronData, name: e.target.value })} />
                     Contact
@@ -604,8 +933,8 @@ function CreationEvennement() {
                     Coût
                     <input type="number" name="cout" value={vigneronData.cout} min="0" onChange={e => setVigneronData({ ...vigneronData, cout: parseInt(e.target.value, 10) })} />
                     <input type="submit" value="Ajouter Vigneron" />
-                </form>
-                        <div>
+                </form> */}
+                        <div ref={orgPersonnelRef}>
                             <h2>Liste des Vignerons</h2>
                             <input
     type="text"
@@ -629,7 +958,7 @@ function CreationEvennement() {
                         </div>
                         <div>
                 <h2>Prestataires</h2>
-                <form onSubmit={handlePrestataireSubmit}>
+                {/* <form onSubmit={handlePrestataireSubmit}>
                     Nouveau Prestataire: Nom 
                     <input type="text" name="name" onChange={handlePrestataireChange} value={prestataireData.name} />
                     Contact 
@@ -639,7 +968,7 @@ function CreationEvennement() {
                     Coût 
                     <input type="number" name="cout" onChange={handlePrestataireChange} value={prestataireData.cout} min="0" />
                     <input type="submit" value="Ajouter Prestataire" />
-                </form>
+                </form> */}
                 <input
     type="text"
     placeholder="Rechercher par nom"
@@ -662,7 +991,7 @@ function CreationEvennement() {
 
             <div>
                 <h2>Animations</h2>
-                <form onSubmit={handleAnimationSubmit}>
+                {/* <form onSubmit={handleAnimationSubmit}>
                     Nouvelle Animation: Nom 
                     <input type="text" name="name" onChange={handleAnimationChange} value={animationData.name} />
                     Contact 
@@ -672,7 +1001,7 @@ function CreationEvennement() {
                     Coût 
                     <input type="number" name="cout" onChange={handleAnimationChange} value={animationData.cout} min="0" />
                     <input type="submit" value="Ajouter Animation" />
-                </form>
+                </form> */}
                 <input
     type="text"
     placeholder="Rechercher par nom"
@@ -695,7 +1024,7 @@ function CreationEvennement() {
 
             <div>
                 <h2>Sponsors</h2>
-                <form onSubmit={handleSponsorSubmit}>
+                {/* <form onSubmit={handleSponsorSubmit}>
                     Nouveau Sponsor: Nom 
                     <input type="text" name="name" onChange={handleSponsorChange} value={sponsorData.name} />
                     Contact 
@@ -705,7 +1034,7 @@ function CreationEvennement() {
                     Coût 
                     <input type="number" name="cout" onChange={handleSponsorChange} value={sponsorData.cout} min="0" />
                     <input type="submit" value="Ajouter Sponsor" />
-                </form>
+                </form> */}
                 <input
     type="text"
     placeholder="Rechercher par nom"
