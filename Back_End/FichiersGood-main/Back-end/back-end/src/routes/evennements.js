@@ -5,18 +5,35 @@ const { Evenement } = require('../db/sequelize');
 // Route pour créer un nouvel événement
 router.post('/', async (req, res) => {
     try {
-        const { 
-            nom, dateDebut, heureDebut, dateFin, heureFin, lieu, typeLieu, objectifs, 
-            questionsInterieur, questionsExterieur, questionsMixte, questionsInfrastructures, 
-            vignerons, prestataires, materielNecessaire, materielEnStock, materielSurSite,
-            besoinSignalétique, superficie, nombresEntreesSimples, nombreEntreesPrincipales,
-            forme, chauffage, coinFumeur, coinTraiteur, batimentERP, electricite, eau, poubelle,
-            toilette, abris, vegetation, parking, distanceParking, proximiteDirecte, navette, typeDeSol
+        const {
+            nom, dateDebut, heureDebut, dateFin, heureFin, lieu, typeLieu, objectifs,
+            questionsInterieur, questionsExterieur, questionsMixte, vignerons, prestataires,
+            animations, sponsors, materielNecessaire, materielEnStock, materielSurSite, parking
         } = req.body;
 
         if (!nom) {
             return res.status(400).json({ error: 'The "nom" field is required.' });
         }
+
+        const vigneronsNoms = await Vigneron.findAll({
+            where: { id: vignerons },
+            attributes: ['name']
+        }).then(vignerons => vignerons.map(v => v.name));
+
+        const prestatairesNoms = await Prestataire.findAll({
+            where: { id: prestataires },
+            attributes: ['name']
+        }).then(prestataires => prestataires.map(p => p.name));
+
+        const animationsNoms = await Animation.findAll({
+            where: { id: animations },
+            attributes: ['name']
+        }).then(animations => animations.map(a => a.name));
+
+        const sponsorsNoms = await Sponsor.findAll({
+            where: { id: sponsors },
+            attributes: ['name']
+        }).then(sponsors => sponsors.map(s => s.name));
 
         const newEvenement = await Evenement.create({
             nom,
@@ -27,35 +44,17 @@ router.post('/', async (req, res) => {
             lieu,
             typeLieu,
             objectifs: Array.isArray(objectifs) ? objectifs.join(', ') : objectifs,
-            questionsInterieur,
-            questionsExterieur,
-            questionsMixte,
-            questionsInfrastructures,
-            vignerons: Array.isArray(vignerons) ? vignerons.join(', ') : vignerons,
-            prestataires: Array.isArray(prestataires) ? prestataires.join(', ') : prestataires,
+            questionsInterieur: JSON.stringify(questionsInterieur),
+            questionsExterieur: JSON.stringify(questionsExterieur),
+            questionsMixte: JSON.stringify(questionsMixte),
+            vigneronsNoms: JSON.stringify(vigneronsNoms),
+            prestatairesNoms: JSON.stringify(prestatairesNoms),
+            animationsNoms: JSON.stringify(animationsNoms),
+            sponsorsNoms: JSON.stringify(sponsorsNoms),
             materielNecessaire,
             materielEnStock,
             materielSurSite,
-            besoinSignalétique,
-            superficie,
-            nombresEntreesSimples,
-            nombreEntreesPrincipales,
-            forme,
-            chauffage,
-            coinFumeur,
-            coinTraiteur,
-            batimentERP,
-            electricite,
-            eau,
-            poubelle,
-            toilette,
-            abris,
-            vegetation,
-            parking,
-            distanceParking,
-            proximiteDirecte,
-            navette,
-            typeDeSol
+            parking: JSON.stringify(parking)
         });
 
         res.status(201).json(newEvenement);
@@ -64,6 +63,7 @@ router.post('/', async (req, res) => {
         res.status(500).json({ error: 'An error occurred while creating the evenement.' });
     }
 });
+
 
 // Route pour récupérer tous les événements
 router.get('/', async (req, res) => {

@@ -155,6 +155,47 @@ const handleFileUpload = () => {
     
     // useEffect to load initial data
     useEffect(() => {
+        // Fetch data functions
+        const fetchVignerons = async () => {
+            try {
+                const response = await fetch('http://localhost:3001/api/vignerons');
+                const data = await response.json();
+                setVignerons(data);
+            } catch (error) {
+                console.error('Erreur lors de la récupération des vignerons:', error);
+            }
+        };
+
+        const fetchPrestataires = async () => {
+            try {
+                const response = await fetch('http://localhost:3001/api/prestataires');
+                const data = await response.json();
+                setPrestataires(data);
+            } catch (error) {
+                console.error('Erreur lors de la récupération des prestataires:', error);
+            }
+        };
+
+        const fetchAnimations = async () => {
+            try {
+                const response = await fetch('http://localhost:3001/api/animations');
+                const data = await response.json();
+                setAnimations(data);
+            } catch (error) {
+                console.error('Erreur lors de la récupération des animations:', error);
+            }
+        };
+
+        const fetchSponsors = async () => {
+            try {
+                const response = await fetch('http://localhost:3001/api/sponsors');
+                const data = await response.json();
+                setSponsors(data);
+            } catch (error) {
+                console.error('Erreur lors de la récupération des sponsors:', error);
+            }
+        };
+
         fetchVignerons();
         fetchPrestataires();
         fetchAnimations();
@@ -168,19 +209,17 @@ const handleFileUpload = () => {
             });
         }, {
             rootMargin: '0px',
-            threshold: 1.0  // Ajustez selon les besoins pour déclencher l'alerte plus tôt ou plus tard
+            threshold: 1.0
         });
 
-        // Attachement de l'observer à la référence
         if (orgPersonnelRef.current) {
             observer.observe(orgPersonnelRef.current);
         }
 
-        // Nettoyage de l'observer lors du démontage du composant
         return () => {
             observer.disconnect();
         };
-    }, [fetchVignerons, fetchPrestataires, fetchAnimations, fetchSponsors]);
+    }, []);
 
     const handleVigneronSelect = (vigneronId) => {
         setEventVignerons(prevState => {
@@ -352,32 +391,49 @@ const handleFileUpload = () => {
         typeLieu: '',
         objectifs: [],
         questionsInterieur: '',
-        questionsExterieur: '',
-        questionsMixte: '',
-        questionsInfrastructures: '',
+        questionsInterieur: {
+            besoinSignaletique: '',
+            superficie: '',
+            nombresEntreesSimples: '',
+            nombreEntreesPrincipales: '',
+            forme: '',
+            chauffage: '',
+            coinFumeur: '',
+            coinTraiteur: '',
+            batimentERP: '',
+        },
+        questionsExterieur: {
+            electricite: '',
+            eau: '',
+            poubelle: '',
+            toilette: '',
+            abris: '',
+            vegetation: '',
+            typeDeSol: ''
+        },
+        questionsMixte: {
+            
+            electricite: '',
+            eau: '',
+            poubelle: '',
+            toilette: '',
+            abris: '',
+            vegetation: '',
+            typeDeSol: ''
+        },
+        parking: {
+            disponible: '',
+            superficie: '',
+            nombreEntrees: '',
+            nombreEntreesPrincipales: '',
+            distanceParking: '',
+            typeDeSol: '',
+            navette: ''
+        }, 
         materielNecessaire: [{ nom: '', quantite: 1 }],
         materielEnStock: [],
         materielSurSite: [],
-        besoinSignalétique: '',
-        superficie: '',
-        nombresEntreesSimples: '',
-        nombreEntreesPrincipales: '',
-        forme: '',
-        chauffage: '',
-        coinFumeur: '',
-        coinTraiteur: '',
-        batimentERP: '',
-        electricite: '',
-        eau: '',
-        poubelle: '',
-        toilette: '',
-        abris: '',
-        vegetation: '',
-        parking: '',
-        distanceParking: '',
-        proximiteDirecte: '',
-        navette: '',
-        typeDeSol: ''
+        
     });
 
     const handleInputChange = (event) => {
@@ -399,7 +455,10 @@ const handleFileUpload = () => {
         e.preventDefault();
         const finalFormData = {
             ...formData,
-            vignerons: eventVignerons
+            vignerons: eventVignerons,
+            prestataires: eventPrestataires,
+            animations: eventAnimations,
+            sponsors: eventSponsors
         };
         fetch('http://localhost:3001/api/evenements', {
             method: 'POST',
@@ -502,10 +561,10 @@ const handleFileUpload = () => {
                     {formData.typeLieu === 'Interieur' && (
                         <div className="mb-3">
                             <label>Questions pour Intérieur</label>
-                            <label htmlFor="besoinSignalétique">Besoin de signalétique :</label><br />
-                            <input type="radio" id="oui" name="besoinSignalétique" value="Oui" />
+                            <label htmlFor="besoinSignaletique">Besoin de signalétique :</label><br />
+                            <input type="radio" id="oui" name="besoinSignaletique" value="Oui" />
                             <label htmlFor="oui">Oui</label><br />
-                            <input type="radio" id="non" name="besoinSignalétique" value="Non" />
+                            <input type="radio" id="non" name="besoinSignaletique" value="Non" />
                             <label htmlFor="non">Non</label><br />
                             <label htmlFor="superficie">Superficie (en m²) :</label><br />
                             <input type="number" id="superficie" name="superficie" required /><br /><br />
@@ -619,10 +678,10 @@ const handleFileUpload = () => {
                     {formData.typeLieu === 'Exterieur' && (
                         <div className="mb-3">
                             <label>Questions pour Extérieur</label>
-                            <label htmlFor="besoinSignalétique">Besoin de signalétique :</label><br />
-                            <input type="radio" id="oui" name="besoinSignalétique" value="Oui" />
+                            <label htmlFor="besoinSignaletique">Besoin de signalétique :</label><br />
+                            <input type="radio" id="oui" name="besoinSignaletique" value="Oui" />
                             <label htmlFor="oui">Oui</label><br />
-                            <input type="radio" id="non" name="besoinSignalétique" value="Non" />
+                            <input type="radio" id="non" name="besoinSignaletique" value="Non" />
                             <label htmlFor="non">Non</label><br />
                             <label htmlFor="Abris">Abris :</label><br />
                             <input type="radio" id="vent" name="Abris" value="Oui" />
@@ -736,10 +795,10 @@ const handleFileUpload = () => {
                     {formData.typeLieu === 'Interieur et Exterieur' && (
                         <div className="mb-3">
 <label>Questions pour Intérieur</label>
-                            <label htmlFor="besoinSignalétique">Besoin de signalétique :</label><br />
-                            <input type="radio" id="oui" name="besoinSignalétique" value="Oui" />
+                            <label htmlFor="besoinSignaletique">Besoin de signalétique :</label><br />
+                            <input type="radio" id="oui" name="besoinSignaletique" value="Oui" />
                             <label htmlFor="oui">Oui</label><br />
-                            <input type="radio" id="non" name="besoinSignalétique" value="Non" />
+                            <input type="radio" id="non" name="besoinSignaletique" value="Non" />
                             <label htmlFor="non">Non</label><br />
                             <label htmlFor="superficie">Superficie (en m²) :</label><br />
                             <input type="number" id="superficie" name="superficie" required /><br /><br />
@@ -800,10 +859,10 @@ const handleFileUpload = () => {
                 </div>
                             
 <label>Questions pour Extérieur</label>
-                            <label htmlFor="besoinSignalétique">Besoin de signalétique :</label><br />
-                            <input type="radio" id="oui" name="besoinSignalétique" value="Oui" />
+                            <label htmlFor="besoinSignaletique">Besoin de signalétique :</label><br />
+                            <input type="radio" id="oui" name="besoinSignaletique" value="Oui" />
                             <label htmlFor="oui">Oui</label><br />
-                            <input type="radio" id="non" name="besoinSignalétique" value="Non" />
+                            <input type="radio" id="non" name="besoinSignaletique" value="Non" />
                             <label htmlFor="non">Non</label><br />
                             <label htmlFor="Abris">Abris :</label><br />
                             <input type="radio" id="vent" name="Abris" value="Oui" />

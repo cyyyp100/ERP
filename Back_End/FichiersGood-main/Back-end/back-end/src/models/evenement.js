@@ -44,17 +44,48 @@ module.exports = (sequelize, DataTypes) => {
             }
         },
         questionsInterieur: {
-            type: DataTypes.STRING,
-            allowNull: true
+            type: DataTypes.TEXT,
+            allowNull: true,
+            get() {
+                const rawValue = this.getDataValue('questionsInterieur');
+                return rawValue ? JSON.parse(rawValue) : null;
+            },
+            set(value) {
+                this.setDataValue('questionsInterieur', JSON.stringify(value));
+            }
         },
         questionsExterieur: {
-            type: DataTypes.STRING,
-            allowNull: true
+            type: DataTypes.TEXT,
+            allowNull: true,
+            get() {
+                const rawValue = this.getDataValue('questionsExterieur');
+                return rawValue ? JSON.parse(rawValue) : null;
+            },
+            set(value) {
+                this.setDataValue('questionsExterieur', JSON.stringify(value));
+            }
         },
         questionsMixte: {
-            type: DataTypes.STRING,
-            allowNull: true
+            type: DataTypes.TEXT,
+            allowNull: true,
+            get() {
+                const rawValue = this.getDataValue('questionsMixte');
+                return rawValue ? JSON.parse(rawValue) : null;
+            },
+            set(value) {
+                this.setDataValue('questionsMixte', JSON.stringify(value));
+            }
         },
+        parking: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            get() {
+                const rawValue = this.getDataValue('parking');
+                return rawValue ? JSON.parse(rawValue) : null;
+            },
+            set(value) {
+                this.setDataValue('parking', JSON.stringify(value));
+            },
         questionsInfrastructures: {
             type: DataTypes.STRING,
             allowNull: true
@@ -79,86 +110,51 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.JSON,
             allowNull: true
         },
-        besoinSignalétique: {
-            type: DataTypes.STRING,
-            allowNull: true
+        vigneronsNoms: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            get() {
+                const rawValue = this.getDataValue('vigneronsNoms');
+                return rawValue ? JSON.parse(rawValue) : [];
+            },
+            set(value) {
+                this.setDataValue('vigneronsNoms', JSON.stringify(value));
+            }
         },
-        superficie: {
-            type: DataTypes.INTEGER,
-            allowNull: true
+        prestatairesNoms: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            get() {
+                const rawValue = this.getDataValue('prestatairesNoms');
+                return rawValue ? JSON.parse(rawValue) : [];
+            },
+            set(value) {
+                this.setDataValue('prestatairesNoms', JSON.stringify(value));
+            }
         },
-        nombresEntreesSimples: {
-            type: DataTypes.INTEGER,
-            allowNull: true
+        animationsNoms: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            get() {
+                const rawValue = this.getDataValue('animationsNoms');
+                return rawValue ? JSON.parse(rawValue) : [];
+            },
+            set(value) {
+                this.setDataValue('animationsNoms', JSON.stringify(value));
+            }
         },
-        nombreEntreesPrincipales: {
-            type: DataTypes.INTEGER,
-            allowNull: true
-        },
-        forme: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        chauffage: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        coinFumeur: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        coinTraiteur: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        batimentERP: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        electricite: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        eau: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        poubelle: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        toilette: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        abris: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        vegetation: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        parking: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        distanceParking: {
-            type: DataTypes.INTEGER,
-            allowNull: true
-        },
-        proximiteDirecte: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        navette: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        typeDeSol: {
-            type: DataTypes.STRING,
-            allowNull: true
+        sponsorsNoms: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            get() {
+                const rawValue = this.getDataValue('sponsorsNoms');
+                return rawValue ? JSON.parse(rawValue) : [];
+            },
+            set(value) {
+                this.setDataValue('sponsorsNoms', JSON.stringify(value));
+            }
         }
+    }
     });
   };
   
