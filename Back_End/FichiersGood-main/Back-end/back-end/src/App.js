@@ -7,6 +7,8 @@ const sequelize = require('./db/sequelize');
 const cors = require('cors');
 const app = express();
 const port = 3001;
+const multer = require('multer');
+const upload = multer({ dest: '/api/uploads/' });
 
 // Importation des modules de route
 const evenementsRoutes = require('./routes/evennements');
@@ -36,6 +38,11 @@ app.use('/api/materiel', materielRoutes); // Ajouté
 
 app.use((req, res, next) => {
     res.status(404).send('Resource not found!');
+});
+
+app.post('/upload', upload.single('file'), (req, res) => {
+    console.log(req.file);
+    res.send('Fichier téléchargé avec succès');
 });
 
 // Démarrage du serveur

@@ -78,6 +78,86 @@ module.exports = (sequelize, DataTypes) => {
         materielSurSite: {
             type: DataTypes.JSON,
             allowNull: true
+        },
+        besoinSignalétique: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        superficie: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        },
+        nombresEntreesSimples: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        },
+        nombreEntreesPrincipales: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        },
+        forme: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        chauffage: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        coinFumeur: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        coinTraiteur: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        batimentERP: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        electricite: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        eau: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        poubelle: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        toilette: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        abris: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        vegetation: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        parking: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        distanceParking: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        },
+        proximiteDirecte: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        navette: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        typeDeSol: {
+            type: DataTypes.STRING,
+            allowNull: true
         }
     });
   };

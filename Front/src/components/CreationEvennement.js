@@ -39,6 +39,36 @@ function CreationEvennement() {
     const [eventPrestataires, setEventPrestataires] = useState([]);
     const [eventAnimations, setEventAnimations] = useState([]);
     const [eventSponsors, setEventSponsors] = useState([]);
+    const [file, setFile] = useState(null);
+
+// Gestionnaire de changement de fichier
+const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
+};
+
+// Gestionnaire de téléchargement de fichier
+const handleFileUpload = () => {
+    if (!file) {
+        alert('Veuillez sélectionner un fichier avant de l\'envoyer.');
+        return;
+    }
+    const formData = new FormData();
+    formData.append('file', file);
+
+    fetch('http://localhost:3001/api/upload', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+        alert('Fichier téléchargé avec succès!');
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        alert('Erreur lors du téléchargement du fichier.');
+    });
+};
 
     const handleVigneronChange = (event) => {
         const { name, value } = event.target;
@@ -327,7 +357,27 @@ function CreationEvennement() {
         questionsInfrastructures: '',
         materielNecessaire: [{ nom: '', quantite: 1 }],
         materielEnStock: [],
-        materielSurSite: []
+        materielSurSite: [],
+        besoinSignalétique: '',
+        superficie: '',
+        nombresEntreesSimples: '',
+        nombreEntreesPrincipales: '',
+        forme: '',
+        chauffage: '',
+        coinFumeur: '',
+        coinTraiteur: '',
+        batimentERP: '',
+        electricite: '',
+        eau: '',
+        poubelle: '',
+        toilette: '',
+        abris: '',
+        vegetation: '',
+        parking: '',
+        distanceParking: '',
+        proximiteDirecte: '',
+        navette: '',
+        typeDeSol: ''
     });
 
     const handleInputChange = (event) => {
@@ -934,7 +984,7 @@ function CreationEvennement() {
                     <input type="number" name="cout" value={vigneronData.cout} min="0" onChange={e => setVigneronData({ ...vigneronData, cout: parseInt(e.target.value, 10) })} />
                     <input type="submit" value="Ajouter Vigneron" />
                 </form> */}
-                        <div ref={orgPersonnelRef}>
+                        <div >
                             <h2>Liste des Vignerons</h2>
                             <input
     type="text"
@@ -1022,7 +1072,7 @@ function CreationEvennement() {
                 </ul>
             </div>
 
-            <div>
+            <div ref={orgPersonnelRef}>
                 <h2>Sponsors</h2>
                 {/* <form onSubmit={handleSponsorSubmit}>
                     Nouveau Sponsor: Nom 
@@ -1054,7 +1104,18 @@ function CreationEvennement() {
                     ))}
                 </ul>
             </div>
+            <h2>Dossier de sécurité</h2>
+
+            <div>
+                <form>
+    <input type="file" onChange={handleFileChange} />
+    <button onClick={handleFileUpload}>Télécharger le fichier</button>
+    </form>
+    </div>
+                    
                     </div>
+
+                    
                     
                     <button type="submit">Soumettre</button>
                 </form>

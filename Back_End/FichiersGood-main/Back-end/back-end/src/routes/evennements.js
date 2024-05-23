@@ -5,7 +5,14 @@ const { Evenement } = require('../db/sequelize');
 // Route pour créer un nouvel événement
 router.post('/', async (req, res) => {
     try {
-        const { nom, dateDebut, heureDebut, dateFin, heureFin, lieu, typeLieu, objectifs, questionsInterieur, questionsExterieur, questionsMixte, questionsInfrastructures, vignerons, prestataires, materielNecessaire, materielEnStock, materielSurSite } = req.body;
+        const { 
+            nom, dateDebut, heureDebut, dateFin, heureFin, lieu, typeLieu, objectifs, 
+            questionsInterieur, questionsExterieur, questionsMixte, questionsInfrastructures, 
+            vignerons, prestataires, materielNecessaire, materielEnStock, materielSurSite,
+            besoinSignalétique, superficie, nombresEntreesSimples, nombreEntreesPrincipales,
+            forme, chauffage, coinFumeur, coinTraiteur, batimentERP, electricite, eau, poubelle,
+            toilette, abris, vegetation, parking, distanceParking, proximiteDirecte, navette, typeDeSol
+        } = req.body;
 
         if (!nom) {
             return res.status(400).json({ error: 'The "nom" field is required.' });
@@ -28,7 +35,27 @@ router.post('/', async (req, res) => {
             prestataires: Array.isArray(prestataires) ? prestataires.join(', ') : prestataires,
             materielNecessaire,
             materielEnStock,
-            materielSurSite
+            materielSurSite,
+            besoinSignalétique,
+            superficie,
+            nombresEntreesSimples,
+            nombreEntreesPrincipales,
+            forme,
+            chauffage,
+            coinFumeur,
+            coinTraiteur,
+            batimentERP,
+            electricite,
+            eau,
+            poubelle,
+            toilette,
+            abris,
+            vegetation,
+            parking,
+            distanceParking,
+            proximiteDirecte,
+            navette,
+            typeDeSol
         });
 
         res.status(201).json(newEvenement);
