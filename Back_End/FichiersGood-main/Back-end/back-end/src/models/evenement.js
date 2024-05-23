@@ -44,17 +44,48 @@ module.exports = (sequelize, DataTypes) => {
             }
         },
         questionsInterieur: {
-            type: DataTypes.STRING,
-            allowNull: true
+            type: DataTypes.TEXT,
+            allowNull: true,
+            get() {
+                const rawValue = this.getDataValue('questionsInterieur');
+                return rawValue ? JSON.parse(rawValue) : null;
+            },
+            set(value) {
+                this.setDataValue('questionsInterieur', JSON.stringify(value));
+            }
         },
         questionsExterieur: {
-            type: DataTypes.STRING,
-            allowNull: true
+            type: DataTypes.TEXT,
+            allowNull: true,
+            get() {
+                const rawValue = this.getDataValue('questionsExterieur');
+                return rawValue ? JSON.parse(rawValue) : null;
+            },
+            set(value) {
+                this.setDataValue('questionsExterieur', JSON.stringify(value));
+            }
         },
         questionsMixte: {
-            type: DataTypes.STRING,
-            allowNull: true
+            type: DataTypes.TEXT,
+            allowNull: true,
+            get() {
+                const rawValue = this.getDataValue('questionsMixte');
+                return rawValue ? JSON.parse(rawValue) : null;
+            },
+            set(value) {
+                this.setDataValue('questionsMixte', JSON.stringify(value));
+            }
         },
+        parking: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            get() {
+                const rawValue = this.getDataValue('parking');
+                return rawValue ? JSON.parse(rawValue) : null;
+            },
+            set(value) {
+                this.setDataValue('parking', JSON.stringify(value));
+            },
         questionsInfrastructures: {
             type: DataTypes.STRING,
             allowNull: true
@@ -78,7 +109,52 @@ module.exports = (sequelize, DataTypes) => {
         materielSurSite: {
             type: DataTypes.JSON,
             allowNull: true
+        },
+        vigneronsNoms: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            get() {
+                const rawValue = this.getDataValue('vigneronsNoms');
+                return rawValue ? JSON.parse(rawValue) : [];
+            },
+            set(value) {
+                this.setDataValue('vigneronsNoms', JSON.stringify(value));
+            }
+        },
+        prestatairesNoms: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            get() {
+                const rawValue = this.getDataValue('prestatairesNoms');
+                return rawValue ? JSON.parse(rawValue) : [];
+            },
+            set(value) {
+                this.setDataValue('prestatairesNoms', JSON.stringify(value));
+            }
+        },
+        animationsNoms: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            get() {
+                const rawValue = this.getDataValue('animationsNoms');
+                return rawValue ? JSON.parse(rawValue) : [];
+            },
+            set(value) {
+                this.setDataValue('animationsNoms', JSON.stringify(value));
+            }
+        },
+        sponsorsNoms: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            get() {
+                const rawValue = this.getDataValue('sponsorsNoms');
+                return rawValue ? JSON.parse(rawValue) : [];
+            },
+            set(value) {
+                this.setDataValue('sponsorsNoms', JSON.stringify(value));
+            }
         }
+    }
     });
   };
   

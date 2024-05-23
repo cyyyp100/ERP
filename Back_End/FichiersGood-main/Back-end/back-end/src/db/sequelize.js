@@ -103,15 +103,15 @@ const initDb = () => {
                 lieu: evenement.lieu,
                 typeLieu: evenement.typeLieu,
                 objectifs: Array.isArray(evenement.objectifs) ? evenement.objectifs.join(', ') : '',
-                questionsInterieur: evenement.questionsInterieur,
-                questionsExterieur: evenement.questionsExterieur,
-                questionsMixte: evenement.questionsMixte,
-                questionsInfrastructures: evenement.questionsInfrastructures,
+                questionsInterieur: JSON.stringify(evenement.questionsInterieur),
+                questionsExterieur: JSON.stringify(evenement.questionsExterieur),
+                questionsMixte: JSON.stringify(evenement.questionsMixte),
                 vignerons: Array.isArray(evenement.vignerons) ? evenement.vignerons.join(', ') : '',
                 prestataires: Array.isArray(evenement.prestataires) ? evenement.prestataires.join(', ') : '',
                 materielNecessaire: evenement.materielNecessaire,
                 materielEnStock: evenement.materielEnStock,
-                materielSurSite: evenement.materielSurSite
+                materielSurSite: evenement.materielSurSite,
+                parking: JSON.stringify(evenement.parking)
             }).then(evenement => console.log(evenement.toJSON()));
         });
     });
