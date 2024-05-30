@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import './bootstrap.css'; 
+import './bootstrap.css';
 import CheckboxGroup from '../helpers/CheckboxGroup';
 import RangeSelector from '../helpers/RangeSelector';
 import CanvasDraw from "react-canvas-draw";
+
 
 function CreationEvennement() {
     const [vignerons, setVignerons] = useState([]);
@@ -14,6 +15,10 @@ function CreationEvennement() {
     const [searchTermPrestataires, setSearchTermPrestataires] = useState('');
     const [searchTermAnimations, setSearchTermAnimations] = useState('');
     const [searchTermSponsors, setSearchTermSponsors] = useState('');
+    const [materiels, setMateriels] = useState([]);
+const [eventMateriels, setEventMateriels] = useState([]);
+const [searchTermMateriels, setSearchTermMateriels] = useState('');
+
 
     const [electricite, setElectricite] = useState('');
     const [eau, setEau] = useState('');
@@ -23,6 +28,10 @@ function CreationEvennement() {
     const [navette, setNavette] = useState('');
 
     const orgPersonnelRef = useRef(null);
+
+    const [activites, setActivites] = useState([{ name: '', startTime: '', duration: '' }]);
+    const [activitesDetails, setActivitesDetails] = useState([{ name: '', startTime: '', duration: '', location: '' }]);
+    const [calendarEvents, setCalendarEvents] = useState([]);
 
 
 
@@ -111,6 +120,16 @@ const handleFileUpload = () => {
             console.error('Erreur lors de la récupération des vignerons:', error);
         }
     }, []);
+
+    const fetchMateriels = useCallback(async () => {
+        try {
+            const response = await fetch('http://localhost:3001/api/materiel');
+            const data = await response.json();
+            setMateriels(data);
+        } catch (error) {
+            console.error('Erreur lors de la récupération des matériels:', error);
+        }
+    }, []);
     
 
     const fetchPrestataires = useCallback(async () => {
@@ -143,60 +162,11 @@ const handleFileUpload = () => {
         }
     }, []);
     
-    // const fetchMateriels = async () => {
-    //     try {
-    //         const response = await fetch('http://localhost:3001/api/materiels');
-    //         const data = await response.json();
-    //         setMateriels(data);
-    //     } catch (error) {
-    //         console.error('Erreur lors de la récupération des matériels:', error);
-    //     }
-    // };
     
     // useEffect to load initial data
     useEffect(() => {
-        // Fetch data functions
-        const fetchVignerons = async () => {
-            try {
-                const response = await fetch('http://localhost:3001/api/vignerons');
-                const data = await response.json();
-                setVignerons(data);
-            } catch (error) {
-                console.error('Erreur lors de la récupération des vignerons:', error);
-            }
-        };
-
-        const fetchPrestataires = async () => {
-            try {
-                const response = await fetch('http://localhost:3001/api/prestataires');
-                const data = await response.json();
-                setPrestataires(data);
-            } catch (error) {
-                console.error('Erreur lors de la récupération des prestataires:', error);
-            }
-        };
-
-        const fetchAnimations = async () => {
-            try {
-                const response = await fetch('http://localhost:3001/api/animations');
-                const data = await response.json();
-                setAnimations(data);
-            } catch (error) {
-                console.error('Erreur lors de la récupération des animations:', error);
-            }
-        };
-
-        const fetchSponsors = async () => {
-            try {
-                const response = await fetch('http://localhost:3001/api/sponsors');
-                const data = await response.json();
-                setSponsors(data);
-            } catch (error) {
-                console.error('Erreur lors de la récupération des sponsors:', error);
-            }
-        };
-
         fetchVignerons();
+        fetchMateriels();
         fetchPrestataires();
         fetchAnimations();
         fetchSponsors();
@@ -219,7 +189,26 @@ const handleFileUpload = () => {
         return () => {
             observer.disconnect();
         };
-    }, []);
+    }, [fetchVignerons, fetchMateriels, fetchPrestataires, fetchAnimations, fetchSponsors]);
+
+
+    const handleMaterielSelect = (materielId) => {
+        setEventMateriels(prevState => {
+            if (prevState.includes(materielId)) {
+                return prevState.filter(id => id !== materielId);
+            } else {
+                return [...prevState, materielId];
+            }
+        });
+    };
+    
+    const handleSearchChangeMateriels = (event) => {
+        setSearchTermMateriels(event.target.value);
+    };
+    
+    const filteredMateriels = materiels.filter(materiel =>
+        materiel.name.toLowerCase().includes(searchTermMateriels.toLowerCase())
+    );
 
     const handleVigneronSelect = (vigneronId) => {
         setEventVignerons(prevState => {
@@ -245,6 +234,53 @@ const handleFileUpload = () => {
     
     const handleSearchChangeSponsors = (event) => {
         setSearchTermSponsors(event.target.value);
+    };
+
+    const handleAddActivity = () => {
+        setActivites([...activites, { name: '', startTime: '', duration: '' }]);
+    };
+
+    const handleActivityChange = (index, field, value) => {
+        const newActivites = [...activites];
+        newActivites[index][field] = value;
+        setActivites(newActivites);
+    };
+
+    const handleAddActivitesDetails = () => {
+        setActivitesDetails([...activitesDetails, { name: '', startTime: '', duration: '', location: '' }]);
+    };
+
+    const handleActivitesDetailsChange = (index, field, value) => {
+        const newActivitesDetails = [...activitesDetails];
+        newActivitesDetails[index][field] = value;
+        setActivitesDetails(newActivitesDetails);
+    };
+
+    const handleActivitySubmit = (e) => {
+        e.preventDefault();
+        const events = activites.map(activity => ({
+            title: activity.name,
+            start: new Date(`${formData.dateDebut}T${activity.startTime}`),
+            end: new Date(`${formData.dateDebut}T${activity.startTime}`).setMinutes(
+                new Date(`${formData.dateDebut}T${activity.startTime}`).getMinutes() + parseInt(activity.duration)
+            ),
+        }));
+        setCalendarEvents(events);
+        alert('Activités ajoutées au calendrier!');
+    };
+
+    const handleActivitesDetailsSubmit = (e) => {
+        e.preventDefault();
+        const events = activitesDetails.map(dj => ({
+            title: dj.name,
+            start: new Date(`${formData.dateDebut}T${dj.startTime}`),
+            end: new Date(`${formData.dateDebut}T${dj.startTime}`).setMinutes(
+                new Date(`${formData.dateDebut}T${dj.startTime}`).getMinutes() + parseInt(dj.duration)
+            ),
+            location: dj.location,
+        }));
+        setCalendarEvents([...calendarEvents, ...events]);
+        alert('Détails DJ/Musique ajoutés au calendrier!');
     };
     
 
@@ -1163,6 +1199,28 @@ const handleFileUpload = () => {
                     ))}
                 </ul>
             </div>
+            <div>
+                    <h2>Matériels</h2>
+                    <input
+                        type="text"
+                        placeholder="Rechercher par nom"
+                        value={searchTermMateriels}
+                        onChange={handleSearchChangeMateriels}
+                        className="form-control mb-3"
+                    />
+                    <ul>
+                        {filteredMateriels.map(materiel => (
+                            <li key={materiel.id}>
+                                <input
+                                    type="checkbox"
+                                    checked={eventMateriels.includes(materiel.id)}
+                                    onChange={() => handleMaterielSelect(materiel.id)}
+                                />
+                                {materiel.name} - Quantité nécessaire: {materiel.quantite_necessaire} - En stock: {materiel.quantite_en_stock} - Sur place: {materiel.quantite_sur_place}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             <h2>Dossier de sécurité</h2>
 
             <div>
@@ -1171,6 +1229,39 @@ const handleFileUpload = () => {
     <button onClick={handleFileUpload}>Télécharger le fichier</button>
     </form>
     </div>
+
+    <h2>Développement du concept</h2>
+                    <h3>Activités prévues</h3>
+                    {activites.map((activity, index) => (
+                        <div key={index} className="mb-3">
+                            <label>Nom de l’activité</label>
+                            <input type="text" name="name" value={activity.name} onChange={(e) => handleActivityChange(index, 'name', e.target.value)} className="form-control" />
+                            <label>Heure de début</label>
+                            <input type="time" name="startTime" value={activity.startTime} onChange={(e) => handleActivityChange(index, 'startTime', e.target.value)} className="form-control" />
+                            <label>Durée prévue (en minutes)</label>
+                            <input type="number" name="duration" value={activity.duration} onChange={(e) => handleActivityChange(index, 'duration', e.target.value)} className="form-control" />
+                        </div>
+                    ))}
+                    <button type="button" onClick={handleAddActivity} className="btn btn-secondary">Ajouter une activité</button>
+                    <button type="button" onClick={handleActivitySubmit} className="btn btn-primary mt-3">Soumettre les activités</button>
+
+                    <h3>Type de DJ et/ou groupe de musique</h3>
+                    {activitesDetails.map((dj, index) => (
+                        <div key={index} className="mb-3">
+                            <label>Nom du DJ/Groupe</label>
+                            <input type="text" name="name" value={dj.name} onChange={(e) => handleActivitesDetailsChange(index, 'name', e.target.value)} className="form-control" />
+                            <label>Heure de début</label>
+                            <input type="time" name="startTime" value={dj.startTime} onChange={(e) => handleActivitesDetailsChange(index, 'startTime', e.target.value)} className="form-control" />
+                            <label>Durée de la prestation (en minutes)</label>
+                            <input type="number" name="duration" value={dj.duration} onChange={(e) => handleActivitesDetailsChange(index, 'duration', e.target.value)} className="form-control" />
+                            <label>Lieu de la prestation</label>
+                            <input type="text" name="location" value={dj.location} onChange={(e) => handleActivitesDetailsChange(index, 'location', e.target.value)} className="form-control" />
+                        </div>
+                    ))}
+                    <button type="button" onClick={handleAddActivitesDetails} className="btn btn-secondary">Ajouter un DJ/Groupe</button>
+                    <button type="button" onClick={handleActivitesDetailsSubmit} className="btn btn-primary mt-3">Soumettre les détails DJ/Musique</button>
+
+                  
                     
                     </div>
 

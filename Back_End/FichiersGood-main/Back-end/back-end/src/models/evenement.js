@@ -153,7 +153,15 @@ module.exports = (sequelize, DataTypes) => {
             set(value) {
                 this.setDataValue('sponsorsNoms', JSON.stringify(value));
             }
-        }
+        },
+        activites: {
+            type: DataTypes.JSON,
+            allowNull: true
+        },
+        activitesDetails: {
+            type: DataTypes.JSON,
+            allowNull: true
+        },
     }
     });
   };

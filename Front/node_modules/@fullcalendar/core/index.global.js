@@ -1,7 +1,7 @@
 /*!
-FullCalendar Core v6.1.11
+FullCalendar Core v6.1.13
 Docs & License: https://fullcalendar.io
-(c) 2023 Adam Shaw
+(c) 2024 Adam Shaw
 */
 var FullCalendar = (function (exports) {
     'use strict';
@@ -2673,10 +2673,10 @@ var FullCalendar = (function (exports) {
     function computeRect(el) {
         let rect = el.getBoundingClientRect();
         return {
-            left: rect.left + window.pageXOffset,
-            top: rect.top + window.pageYOffset,
-            right: rect.right + window.pageXOffset,
-            bottom: rect.bottom + window.pageYOffset,
+            left: rect.left + window.scrollX,
+            top: rect.top + window.scrollY,
+            right: rect.right + window.scrollX,
+            bottom: rect.bottom + window.scrollY,
         };
     }
     function computeClippedClientRect(el) {
@@ -2940,16 +2940,16 @@ var FullCalendar = (function (exports) {
     }
     class WindowScrollController extends ScrollController {
         getScrollTop() {
-            return window.pageYOffset;
+            return window.scrollY;
         }
         getScrollLeft() {
-            return window.pageXOffset;
+            return window.scrollX;
         }
         setScrollTop(n) {
-            window.scroll(window.pageXOffset, n);
+            window.scroll(window.scrollX, n);
         }
         setScrollLeft(n) {
-            window.scroll(n, window.pageYOffset);
+            window.scroll(n, window.scrollY);
         }
         getScrollWidth() {
             return document.documentElement.scrollWidth;
@@ -9835,7 +9835,7 @@ var FullCalendar = (function (exports) {
         return sliceEventStore(props.eventStore, props.eventUiBases, props.dateProfile.activeRange, allDay ? props.nextDayThreshold : null).fg;
     }
 
-    const version = '6.1.11';
+    const version = '6.1.13';
 
     exports.Calendar = Calendar;
     exports.Internal = internal;

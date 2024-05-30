@@ -111,7 +111,9 @@ const initDb = () => {
                 materielNecessaire: evenement.materielNecessaire,
                 materielEnStock: evenement.materielEnStock,
                 materielSurSite: evenement.materielSurSite,
-                parking: JSON.stringify(evenement.parking)
+                parking: JSON.stringify(evenement.parking),
+                activites: evenement.activities,
+                activitesDetails: evenement.djDetails,
             }).then(evenement => console.log(evenement.toJSON()));
         });
     });
