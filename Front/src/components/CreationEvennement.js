@@ -3,7 +3,11 @@ import './bootstrap.css';
 import CheckboxGroup from '../helpers/CheckboxGroup';
 import RangeSelector from '../helpers/RangeSelector';
 import CanvasDraw from "react-canvas-draw";
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 
+const localizer = momentLocalizer(moment);
 
 function CreationEvennement() {
     const [vignerons, setVignerons] = useState([]);
@@ -1261,7 +1265,14 @@ const handleFileUpload = () => {
                     <button type="button" onClick={handleAddActivitesDetails} className="btn btn-secondary">Ajouter un DJ/Groupe</button>
                     <button type="button" onClick={handleActivitesDetailsSubmit} className="btn btn-primary mt-3">Soumettre les détails DJ/Musique</button>
 
-                  
+                    <Calendar
+                        localizer={localizer}
+                        events={calendarEvents}
+                        startAccessor="start"
+                        endAccessor="end"
+                        style={{ height: 500 }}
+                        draggableAccessor={() => true}
+                    />
                     
                     </div>
 
