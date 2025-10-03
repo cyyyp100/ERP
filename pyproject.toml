@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "erp"
+version = "0.1.0"
+description = "Domain layer for a lightweight ERP demo application"
+authors = [{name = "ERP Maintainers"}]
+readme = "README.md"
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+test = ["pytest>=7.0"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
