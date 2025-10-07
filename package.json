@@ -1,0 +1,26 @@
+{
+  "name": "jj-events-platform",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Modern event planning platform with questionnaire wizard and operational dashboard.",
+  "workspaces": [
+    "front",
+    "server",
+    "shared",
+    "tests"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "dev": "npm run dev --workspace front",
+    "dev:front": "npm run dev --workspace front",
+    "dev:server": "npm run dev --workspace server",
+    "dev:shared": "npm run dev --workspace shared",
+    "lint": "npm run lint --workspaces",
+    "test": "npm run test --workspaces",
+    "format": "npm run format --workspaces",
+    "postinstall": "npm run prisma:generate --workspace server"
+  },
+  "engines": {
+    "node": ">=18.17.0"
+  }
+}

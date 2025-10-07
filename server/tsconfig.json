@@ -1,0 +1,17 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "moduleResolution": "Node",
+    "module": "ESNext",
+    "rootDir": "src",
+    "declaration": true,
+    "sourceMap": true,
+    "paths": {
+      "jj-events-shared": ["../shared/src"],
+      "jj-events-shared/*": ["../shared/src/*"]
+    }
+  },
+  "include": ["src", "vitest.config.ts"],
+  "exclude": ["dist", "node_modules"]
+}

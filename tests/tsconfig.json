@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "types": ["vitest"],
+    "paths": {
+      "jj-events-shared": ["../shared/src"],
+      "jj-events-shared/*": ["../shared/src/*"]
+    }
+  },
+  "include": ["src"]
+}
