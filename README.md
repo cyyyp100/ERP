@@ -32,8 +32,6 @@ npm install
 
 Cette commande installe les dépendances de l'ensemble des workspaces (`front`, `server`, `shared`, `tests`) et crée les liens symboliques internes (`jj-events-shared`).
 
-> ℹ️  Le package `rate-limiter-flexible` du workspace `server` est volontairement figé sur la version **2.4.2** (dernière révision 2.x publiée). Si vous souhaitez changer de version par la suite, vérifiez d'abord les numéros disponibles via `npm info rate-limiter-flexible version` avant de mettre à jour `server/package.json`.
-
 ### Configuration des variables d'environnement serveur
 
 ```bash
